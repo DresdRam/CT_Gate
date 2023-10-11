@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Gate</string>
+    <string name="cairo_traffic_logo">The Logo of Cairo Traffic.</string>
+    <string name="cairo_traffic_gate">بوابة مرور القاهرة</string>
+    <string name="national_id">الرقم القومي</string>
+    <string name="name">الاسم</string>
+    <string name="ct_footer">الإدارة العامة لمرور القاهرة\nإدارة المجندين و التدريب</string>
+    <string name="ct_management">مدير الإدارة</string>
+    <string name="ct_manager">لواء/ حسام رفعت</string>
+    <string name="main_gate">البوابة الرئيسية</string>
+    <string name="or">أو</string>
+    <string name="soldier_image">Soldier Image</string>
+</resources>
