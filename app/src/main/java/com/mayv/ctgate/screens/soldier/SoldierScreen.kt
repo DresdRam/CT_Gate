@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,11 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
+import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.ui.theme.AppTheme
 
 @Composable
@@ -105,6 +108,13 @@ fun InfoCard() {
         colors = CardDefaults.cardColors(Color.White)
     ) {
 
+        OutlinedTextInputField(
+            modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp),
+            hint = stringResource(id = R.string.name),
+            enabled = false,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            onOkClicked = {}
+        )
 
     }
 }
