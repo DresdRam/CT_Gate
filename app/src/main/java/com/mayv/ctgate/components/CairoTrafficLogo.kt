@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import com.mayv.ctgate.R
 
 @Composable
-fun LogoImage(modifier: Modifier) {
+fun CairoTrafficLogo(modifier: Modifier) {
     Image(
         painter = painterResource(id = R.drawable.cairo_traffic_logo),
         contentDescription = stringResource(id = R.string.cairo_traffic_logo),

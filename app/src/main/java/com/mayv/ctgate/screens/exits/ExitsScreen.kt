@@ -34,7 +34,7 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.model.Log
 
 @Composable
-fun ExitsScreen(navController: NavController){
+fun ExitsScreen(mainNavController: NavController, drawerNavController: NavController){
 
     val list = createDummyData()
 

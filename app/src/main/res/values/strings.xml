@@ -10,4 +10,14 @@
     <string name="main_gate">البوابة الرئيسية</string>
     <string name="or">أو</string>
     <string name="soldier_image">Soldier Image</string>
+    <string name="holiday_group">الدفع</string>
+    <string name="police_numer">رقم الشرطة</string>
+    <string name="notes">الملاحظات</string>
+    <string name="unit_job">التشغيل</string>
+    <string name="governorate">المحافظة</string>
+    <string name="medical_type">نوع الحالة الصحية</string>
+    <string name="education">المؤهل</string>
+    <string name="phone_number">رقم الهاتف</string>
+    <string name="enrollment_date">التجنيد</string>
+    <string name="unit">الوحدة</string>
 </resources>

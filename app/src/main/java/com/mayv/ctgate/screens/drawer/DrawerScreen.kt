@@ -224,7 +224,7 @@ fun ScreenNavigation(
                 }
             }
         ) {
-            DrawerNavigation(drawerNavController, paddingValues)
+            DrawerNavigation(navController, drawerNavController, paddingValues)
         }
     }
 }

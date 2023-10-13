@@ -1,6 +1,5 @@
 package com.mayv.ctgate.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,17 +29,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.components.BannerText
-import com.mayv.ctgate.components.LogoImage
+import com.mayv.ctgate.components.CairoTrafficLogo
 import com.mayv.ctgate.components.OutlinedTextInputField
+import com.mayv.ctgate.navigation.AppScreens
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    MainSurface()
+fun HomeScreen(mainNavController: NavController, drawerNavController: NavController) {
+    MainSurface(mainNavController, drawerNavController)
 }
 
 @Composable
-fun MainSurface() {
+fun MainSurface(mainNavController: NavController, drawerNavController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -66,7 +66,7 @@ fun MainSurface() {
                     textColor = colorResource(id = R.color.hint_color)
                 )
 
-                LogoImage(
+                CairoTrafficLogo(
                     Modifier
                         .padding(start = 20.dp, end = 20.dp, top = 20.dp)
                         .size(180.dp)
@@ -79,10 +79,9 @@ fun MainSurface() {
                         .padding(top = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally),
                     hint = stringResource(id = R.string.national_id),
-                    enabled = true,
-                    KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 ) { text ->
-                    Log.i("OTIF", "OutlinedInputFieldText: $text")
+                    mainNavController.navigate(AppScreens.SoldierScreen.name)
                 }
 
                 Box(
@@ -128,10 +127,9 @@ fun MainSurface() {
                         .padding(top = 10.dp)
                         .align(alignment = Alignment.CenterHorizontally),
                     hint = stringResource(id = R.string.name),
-                    enabled = true,
-                    KeyboardOptions(keyboardType = KeyboardType.Text)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 ) { text ->
-                    Log.i("OTIF", "OutlinedInputFieldText: $text")
+                    mainNavController.navigate(AppScreens.SoldierScreen.name)
                 }
 
                 BannerText(

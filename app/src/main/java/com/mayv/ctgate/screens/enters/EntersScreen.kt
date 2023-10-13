@@ -27,7 +27,7 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.model.Log
 
 @Composable
-fun EntersScreen(navController: NavController) {
+fun EntersScreen(mainNavController: NavController, drawerNavController: NavController) {
 
     val list = createDummyData()
 

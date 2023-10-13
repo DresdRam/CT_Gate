@@ -8,8 +8,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,17 +27,19 @@ import com.mayv.ctgate.R
 @Composable
 fun OutlinedTextInputField(
     modifier: Modifier,
+    text: String = "",
     hint: String,
-    enabled: Boolean,
+    singleLine: Boolean = true,
+    enabled: Boolean = true,
     keyboardOptions: KeyboardOptions,
-    onOkClicked: (String) -> Unit
+    onDoneClicked: (String) -> Unit
 ) {
-    val text = remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(text) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
-        value = text.value,
-        onValueChange = { text.value = it },
+        value = value,
+        onValueChange = { value = it },
         enabled = enabled,
         label = {
             Text(
@@ -47,7 +51,7 @@ fun OutlinedTextInputField(
             )
         },
         modifier = modifier,
-        singleLine = true,
+        singleLine = singleLine,
         textStyle = TextStyle(
             textDirection = TextDirection.Content,
             color = Color(0xFF000000)
@@ -56,10 +60,11 @@ fun OutlinedTextInputField(
         keyboardActions = KeyboardActions(
             onDone = {
                 keyboardController?.hide()
-                onOkClicked(text.value)
+                onDoneClicked(value)
             }),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = colorResource(id = R.color.gradient_color)
+            unfocusedBorderColor = colorResource(id = R.color.gradient_color),
+            disabledBorderColor = Color.Gray
         )
     )
 }

@@ -15,31 +15,31 @@ import com.mayv.ctgate.screens.exits.ExitsScreen
 import com.mayv.ctgate.screens.home.HomeScreen
 
 @Composable
-fun DrawerNavigation(navigationController: NavController, paddingValues: PaddingValues) {
+fun DrawerNavigation(mainNavController: NavController, drawerNavController: NavController, paddingValues: PaddingValues) {
 
     NavHost(
         modifier = Modifier.padding(paddingValues = paddingValues),
-        navController = navigationController as NavHostController,
+        navController = drawerNavController as NavHostController,
         startDestination = AppScreens.HomeScreen.name
     ) {
         composable(AppScreens.AttendanceScreen.name) {
-            AttendanceScreen(navigationController)
+            AttendanceScreen(mainNavController = mainNavController, drawerNavController = drawerNavController)
         }
 
         composable(AppScreens.CountScreen.name) {
-            CountScreen(navigationController)
+            CountScreen(mainNavController = mainNavController, drawerNavController = drawerNavController)
         }
 
         composable(AppScreens.EntersScreen.name) {
-            EntersScreen(navigationController)
+            EntersScreen(mainNavController = mainNavController, drawerNavController = drawerNavController)
         }
 
         composable(AppScreens.ExitsScreen.name) {
-            ExitsScreen(navigationController)
+            ExitsScreen(mainNavController = mainNavController, drawerNavController = drawerNavController)
         }
 
         composable(AppScreens.HomeScreen.name) {
-            HomeScreen(navigationController)
+            HomeScreen(mainNavController = mainNavController, drawerNavController = drawerNavController)
         }
     }
 }

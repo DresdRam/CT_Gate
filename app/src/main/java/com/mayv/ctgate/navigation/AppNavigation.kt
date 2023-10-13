@@ -1,5 +1,7 @@
 package com.mayv.ctgate.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,24 +12,126 @@ import com.mayv.ctgate.screens.soldier.SoldierScreen
 import com.mayv.ctgate.screens.splash.SplashScreen
 
 @Composable
-fun AppNavigation(){
+fun AppNavigation() {
     val navigationController = rememberNavController()
+    val transitionSpeed = 300
 
-    NavHost(navController = navigationController, startDestination = AppScreens.SplashScreen.name){
+    NavHost(navController = navigationController, startDestination = AppScreens.SplashScreen.name) {
 
-        composable(AppScreens.SearchScreen.name){
+        composable(
+            route = AppScreens.SearchScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
             SearchScreen(navigationController)
         }
 
-        composable(AppScreens.SoldierScreen.name){
+        composable(
+            route = AppScreens.SoldierScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
             SoldierScreen(navigationController)
         }
 
-        composable(AppScreens.SplashScreen.name){
+        composable(
+            route = AppScreens.SplashScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
             SplashScreen(navigationController)
         }
 
-        composable(AppScreens.DrawerScreen.name){
+        composable(
+            route = AppScreens.DrawerScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }
+        ) {
             DrawerScreen(navigationController)
         }
     }
