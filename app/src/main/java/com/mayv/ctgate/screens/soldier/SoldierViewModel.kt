@@ -13,23 +13,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SoldierViewModel @Inject constructor(private val soldierRepository: SoldierRepository) : ViewModel() {
+class SoldierViewModel @Inject constructor(private val soldierRepository: SoldierRepository) :
+    ViewModel() {
 
-    var soldierData: MutableState<DataOrException<Soldier, Boolean, Exception>> =
-        mutableStateOf(DataOrException(null, true, Exception()))
+    var soldierData: MutableState<DataOrException<Soldier, Boolean, Boolean, Exception>> =
+        mutableStateOf(DataOrException(null, true, false, Exception()))
 
-    var soldierImage: MutableState<DataOrException<Bitmap, Boolean, Exception>> =
-        mutableStateOf(DataOrException(null, true, Exception()))
+    var soldierImage: MutableState<DataOrException<Bitmap, Boolean, Boolean, Exception>> =
+        mutableStateOf(DataOrException(null, true, false, Exception()))
+
 
     fun soldierImage(nationalId: Long) {
         viewModelScope.launch {
+            if (nationalId.toString().isEmpty()) return@launch
+
             soldierImage.value = soldierRepository.getSoldierImage(nationalId)
+
         }
     }
 
     fun soldierInfo(nationalId: Long) {
         viewModelScope.launch {
+
+            if (nationalId.toString().isEmpty()) return@launch
+
             soldierData.value = soldierRepository.getSoldierData(nationalId)
+
         }
     }
 

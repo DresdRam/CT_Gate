@@ -1,5 +1,6 @@
 package com.mayv.ctgate.screens.soldier
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -33,17 +35,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
 
 @Composable
-fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = viewModel()) {
-    viewModel.soldierInfo(30003280201298)
-    viewModel.soldierImage(30003280201298)
-
+fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = hiltViewModel()) {
     MainScaffold(viewModel)
 }
 
@@ -94,6 +93,13 @@ private fun MainScaffold(viewModel: SoldierViewModel) {
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
 
+            if (viewModel.soldierData.value.loading == true) {
+                CircularProgressIndicator()
+                Log.d("TAG", "MainScaffold: ${viewModel.soldierData.value.loading}")
+            } else {
+                Log.d("TAG", "MainScaffold: ${viewModel.soldierData.value.data.toString()}")
+            }
+
             Box(modifier = Modifier.padding(top = 40.dp)) {
                 Card(
                     modifier = Modifier
@@ -135,7 +141,6 @@ private fun InfoCard(viewModel: SoldierViewModel) {
                 .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp, top = 15.dp),
             hint = stringResource(id = R.string.name),
-            text = if (viewModel.soldierData.value.loading == false) viewModel.soldierData.value.data!!.name else "",
             enabled = false,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onDoneClicked = {}

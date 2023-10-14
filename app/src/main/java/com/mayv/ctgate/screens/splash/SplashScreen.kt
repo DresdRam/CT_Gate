@@ -1,5 +1,6 @@
 package com.mayv.ctgate.screens.splash
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
+import com.mayv.ctgate.utils.Constants
 import kotlinx.coroutines.delay
 
 

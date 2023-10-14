@@ -3,12 +3,14 @@ package com.mayv.ctgate.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mayv.ctgate.screens.drawer.DrawerScreen
 import com.mayv.ctgate.screens.search.SearchScreen
 import com.mayv.ctgate.screens.soldier.SoldierScreen
+import com.mayv.ctgate.screens.soldier.SoldierViewModel
 import com.mayv.ctgate.screens.splash.SplashScreen
 
 @Composable
@@ -73,7 +75,9 @@ fun AppNavigation() {
                     animationSpec = tween(transitionSpeed)
                 )
             }) {
-            SoldierScreen(navigationController)
+
+            val viewModel = hiltViewModel<SoldierViewModel>()
+            SoldierScreen(navigationController, viewModel)
         }
 
         composable(
