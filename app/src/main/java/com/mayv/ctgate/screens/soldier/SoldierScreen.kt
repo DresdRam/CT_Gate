@@ -17,8 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,27 +30,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
-import com.mayv.ctgate.ui.theme.AppTheme
 
 @Composable
-fun SoldierScreen(navController: NavController) {
-    MainScaffold()
+fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = viewModel()) {
+    viewModel.soldierInfo(30003280201298)
+    viewModel.soldierImage(30003280201298)
+
+    MainScaffold(viewModel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold() {
+private fun MainScaffold(viewModel: SoldierViewModel) {
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -111,16 +109,16 @@ private fun MainScaffold() {
                 }
             }
 
-            StatusCard()
+            StatusCard(viewModel)
 
-            InfoCard()
+            InfoCard(viewModel)
 
         }
     }
 }
 
 @Composable
-private fun InfoCard() {
+private fun InfoCard(viewModel: SoldierViewModel) {
 
     Card(
         modifier = Modifier
@@ -137,6 +135,7 @@ private fun InfoCard() {
                 .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp, top = 15.dp),
             hint = stringResource(id = R.string.name),
+            text = if (viewModel.soldierData.value.loading == false) viewModel.soldierData.value.data!!.name else "",
             enabled = false,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onDoneClicked = {}
@@ -310,7 +309,7 @@ private fun BottomBarContent() {
 }
 
 @Composable
-private fun StatusCard() {
+private fun StatusCard(viewModel: SoldierViewModel) {
     Card(
         modifier = Modifier
             .wrapContentHeight()
@@ -384,13 +383,5 @@ private fun StatusItemWithIcon(text: String, ic: Int, tint: Color) {
             contentDescription = "Status Icon",
             tint = tint
         )
-    }
-}
-
-@Composable
-@Preview
-private fun Prev() {
-    AppTheme {
-        MainScaffold()
     }
 }

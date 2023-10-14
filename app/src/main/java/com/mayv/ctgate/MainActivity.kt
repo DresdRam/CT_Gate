@@ -10,8 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mayv.ctgate.navigation.AppNavigation
-import com.mayv.ctgate.navigation.AppScreens
+import com.mayv.ctgate.screens.soldier.SoldierViewModel
 import com.mayv.ctgate.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,13 +31,16 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AppSurface(){
+    private fun AppSurface() {
         Surface(modifier = Modifier.fillMaxSize()) {
-            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 AppNavigation()
             }
         }
     }
 
-    
+
 }

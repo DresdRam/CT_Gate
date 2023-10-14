@@ -1,6 +1,7 @@
 package com.mayv.ctgate.di
 
 import com.mayv.ctgate.network.SMISApi
+import com.mayv.ctgate.repository.SoldierRepository
 import com.mayv.ctgate.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -13,6 +14,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideSoldierRepository(api: SMISApi) = SoldierRepository(api)
 
     @Singleton
     @Provides

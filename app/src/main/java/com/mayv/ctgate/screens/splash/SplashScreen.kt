@@ -35,6 +35,7 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
 import kotlinx.coroutines.delay
 
+
 @Composable
 fun SplashScreen(navController: NavController) {
 
@@ -53,7 +54,6 @@ fun SplashScreen(navController: NavController) {
         navController.popBackStack()
         navController.navigate(AppScreens.DrawerScreen.name)
     }
-
 }
 
 @Composable
@@ -122,4 +122,4 @@ private fun Splash(alpha: Float) {
             }
         }
     }
-} 
+}
