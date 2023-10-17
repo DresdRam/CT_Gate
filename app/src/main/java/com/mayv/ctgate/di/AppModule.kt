@@ -24,15 +24,14 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSMISApi(): SMISApi {
-        val client = OkHttpClient.Builder()
+        /*val client = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.MINUTES).build()
+            .writeTimeout(10, TimeUnit.MINUTES).build()*/
 
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
             .build()
             .create(SMISApi::class.java)
     }

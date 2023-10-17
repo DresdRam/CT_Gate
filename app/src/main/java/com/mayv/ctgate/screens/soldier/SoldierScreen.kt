@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,13 +46,17 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
 import com.mayv.ctgate.data.Resource
+import com.mayv.ctgate.model.Note
 import com.mayv.ctgate.model.Soldier
+import okhttp3.internal.notify
 
 @Composable
 fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = hiltViewModel()) {
 
-    viewModel.soldierData(30003280201298)
-    viewModel.soldierImage(300030280201298)
+    LaunchedEffect(key1 = Unit) {
+        viewModel.soldierData(30003280201298)
+        viewModel.soldierImage(300030280201298)
+    }
 
     val soldierData by viewModel.data.collectAsState()
     val soldierImage by viewModel.image.collectAsState()
@@ -276,7 +281,7 @@ private fun InfoCard(
                 )
             }
 
-            (data.data?.education)?.let {
+            (data.data?.qualification)?.let {
                 OutlinedTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -330,7 +335,7 @@ private fun InfoCard(
             )
         }
 
-        (data.data?.rating_type)?.let {
+        (data.data?.getNotesAsString())?.let {
             OutlinedTextInputField(
                 modifier = Modifier
                     .fillMaxWidth()
