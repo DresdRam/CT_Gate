@@ -1,49 +1,46 @@
 package com.mayv.ctgate.repository
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.mayv.ctgate.data.DataOrException
+import com.mayv.ctgate.data.Resource
 import com.mayv.ctgate.model.Soldier
 import com.mayv.ctgate.network.SMISApi
 import com.mayv.ctgate.utils.byteArrayToBitmap
-import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class SoldierRepository @Inject constructor(private val api: SMISApi) {
 
-    private val soldierDataOrException = DataOrException<Soldier, Boolean, Boolean, Exception>()
+    private val soldierResource = Resource<Soldier>()
 
-    private val imageDataOrException = DataOrException<Bitmap, Boolean, Boolean, Exception>()
+    private val imageResource = Resource<Bitmap>()
 
-    suspend fun getSoldierData(nationalId: Long): DataOrException<Soldier, Boolean, Boolean, Exception> {
-
+    suspend fun getSoldierData(nationalId: Long): Resource<Soldier> {
         try {
-            soldierDataOrException.loading = true
-            soldierDataOrException.data = api.getSoldier(nationalId)
-            if(soldierDataOrException.data.toString().isNotEmpty()) soldierDataOrException.loading = false
+            soldierResource.loading = true
+            soldierResource.data = api.getSoldier(nationalId)
+            soldierResource.loading = false
         }catch (exception: Exception){
-            soldierDataOrException.loading = false
-            soldierDataOrException.failed = true
-            soldierDataOrException.exception = exception
+            soldierResource.loading = false
+            soldierResource.failed = true
+            soldierResource.exception = exception
         }
 
-        return soldierDataOrException
+        return soldierResource
     }
 
-    suspend fun getSoldierImage(nationalId: Long): DataOrException<Bitmap, Boolean, Boolean, Exception> {
+    suspend fun getSoldierImage(nationalId: Long): Resource<Bitmap> {
 
         try {
-            imageDataOrException.loading = true
+            imageResource.loading = true
             val byteArray = api.getSoldierImage(nationalId).byteStream().readBytes()
-            imageDataOrException.data = byteArrayToBitmap(byteArray)
-            if(imageDataOrException.data.toString().isNotEmpty()) imageDataOrException.loading = false
+            imageResource.data = byteArrayToBitmap(byteArray)
+            imageResource.loading = false
         }catch (exception: Exception){
-            imageDataOrException.loading = false
-            imageDataOrException.loading = true
-            imageDataOrException.exception = exception
+            imageResource.loading = false
+            imageResource.failed = true
+            imageResource.exception = exception
         }
 
-        return imageDataOrException
+        return imageResource
     }
 
 }

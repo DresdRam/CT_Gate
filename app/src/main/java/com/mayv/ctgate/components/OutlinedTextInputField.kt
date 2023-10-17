@@ -45,7 +45,7 @@ fun OutlinedTextInputField(
             Text(
                 text = hint,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Right,
+                textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 color = colorResource(id = R.color.hint_color)
             )

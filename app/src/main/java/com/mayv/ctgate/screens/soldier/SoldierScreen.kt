@@ -1,5 +1,6 @@
 package com.mayv.ctgate.screens.soldier
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,15 +21,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,15 +44,30 @@ import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
+import com.mayv.ctgate.data.Resource
+import com.mayv.ctgate.model.Soldier
 
 @Composable
 fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = hiltViewModel()) {
-    MainScaffold(viewModel)
+
+    viewModel.soldierData(30003280201298)
+    viewModel.soldierImage(300030280201298)
+
+    val soldierData by viewModel.data.collectAsState()
+    val soldierImage by viewModel.image.collectAsState()
+
+    MainScaffold(soldierData, soldierImage)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(viewModel: SoldierViewModel) {
+private fun MainScaffold(
+    data: Resource<Soldier>,
+    image: Resource<Bitmap>
+) {
+
+    //val conf = Bitmap.Config.ARGB_8888
+    //val bitmap = Bitmap.createBitmap(20, 20, conf)
 
     Scaffold(
         modifier = Modifier
@@ -93,38 +112,46 @@ private fun MainScaffold(viewModel: SoldierViewModel) {
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
 
-            if (viewModel.soldierData.value.loading == true) {
-                CircularProgressIndicator()
-                Log.d("TAG", "MainScaffold: ${viewModel.soldierData.value.loading}")
+            if (data.loading) {
+                Log.d("TAG", "MainScaffold: loading -> ${data.loading}")
+                Log.d("TAG", "MainScaffold: data -> ${data.data}")
+                Log.d("TAG", "MainScaffold: exception -> ${data.exception?.message}")
             } else {
-                Log.d("TAG", "MainScaffold: ${viewModel.soldierData.value.data.toString()}")
+                Log.d("TAG", "MainScaffold: loading -> ${data.loading}")
+                Log.d("TAG", "MainScaffold: data -> ${data.data}")
+                Log.d("TAG", "MainScaffold: exception -> ${data.exception?.message}")
             }
 
             Box(modifier = Modifier.padding(top = 40.dp)) {
                 Card(
                     modifier = Modifier
-                        .size(260.dp, 340.dp),
+                        .size(240.dp, 340.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = CardDefaults.cardElevation(15.dp)
                 ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(id = R.drawable.cairo_traffic_logo),
-                        contentDescription = stringResource(id = R.string.soldier_image)
-                    )
+                    (image.data)?.let {
+                        Image(
+                            modifier = Modifier.fillMaxSize(),
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = stringResource(id = R.string.soldier_image),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
                 }
             }
 
-            StatusCard(viewModel)
+            StatusCard(data)
 
-            InfoCard(viewModel)
+            InfoCard(data)
 
         }
     }
 }
 
 @Composable
-private fun InfoCard(viewModel: SoldierViewModel) {
+private fun InfoCard(
+    data: Resource<Soldier>
+) {
 
     Card(
         modifier = Modifier
@@ -136,49 +163,27 @@ private fun InfoCard(viewModel: SoldierViewModel) {
         colors = CardDefaults.cardColors(Color.White)
     ) {
 
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-            hint = stringResource(id = R.string.name),
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
-
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-            hint = stringResource(id = R.string.national_id),
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-        ) {
+        (data.data?.name)?.let {
             OutlinedTextInputField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 15.dp, end = 5.dp),
-                hint = stringResource(id = R.string.holiday_group),
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                hint = stringResource(id = R.string.name),
                 enabled = false,
+                text = it,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 onDoneClicked = {}
             )
+        }
 
+        (data.data?.national_id)?.let {
             OutlinedTextInputField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 5.dp, end = 15.dp),
-                hint = stringResource(id = R.string.police_numer),
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                hint = stringResource(id = R.string.national_id),
                 enabled = false,
+                text = it.toString(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 onDoneClicked = {}
             )
@@ -189,27 +194,33 @@ private fun InfoCard(viewModel: SoldierViewModel) {
                 .fillMaxWidth()
                 .padding(top = 15.dp)
         ) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 15.dp, end = 5.dp),
-                hint = stringResource(id = R.string.unit),
-                enabled = false,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
+            (data.data?.enrollment?.holiday_group)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
+                    hint = stringResource(id = R.string.holiday_group),
+                    enabled = false,
+                    text = it,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
 
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 5.dp, end = 15.dp),
-                hint = stringResource(id = R.string.enrollment_date),
-                enabled = false,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
+            (data.data?.enrollment?.police_number)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
+                    hint = stringResource(id = R.string.police_numer),
+                    enabled = false,
+                    text = it.toString(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
         }
 
         Row(
@@ -217,71 +228,127 @@ private fun InfoCard(viewModel: SoldierViewModel) {
                 .fillMaxWidth()
                 .padding(top = 15.dp)
         ) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 15.dp, end = 5.dp),
-                hint = stringResource(id = R.string.phone_number),
-                enabled = false,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
+            (data.data?.enrollment?.unit?.name)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
+                    hint = stringResource(id = R.string.unit),
+                    enabled = false,
+                    text = it.toString(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
 
+            (data.data?.enrollment?.enrollment_date)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
+                    hint = stringResource(id = R.string.enrollment_date),
+                    enabled = false,
+                    text = it.split('T')[0],
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)
+        ) {
+            (data.data?.phone_number)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
+                    hint = stringResource(id = R.string.phone_number),
+                    enabled = false,
+                    text = it,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
+
+            (data.data?.education)?.let {
+                OutlinedTextInputField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
+                    hint = stringResource(id = R.string.education),
+                    enabled = false,
+                    text = it,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
+                )
+            }
+        }
+
+        (data.data?.medical_condition)?.let {
             OutlinedTextInputField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 5.dp, end = 15.dp),
-                hint = stringResource(id = R.string.education),
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                hint = stringResource(id = R.string.medical_type),
                 enabled = false,
+                text = it,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 onDoneClicked = {}
             )
         }
 
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-            hint = stringResource(id = R.string.medical_type),
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
+        (data.data?.address?.get(0)?.governorate?.name)?.let {
+            OutlinedTextInputField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                hint = stringResource(id = R.string.governorate),
+                enabled = false,
+                text = it,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onDoneClicked = {}
+            )
+        }
 
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-            hint = stringResource(id = R.string.governorate),
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
+        (data.data?.enrollment?.unit_job)?.let {
+            OutlinedTextInputField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                hint = stringResource(id = R.string.unit_job),
+                enabled = false,
+                text = it,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onDoneClicked = {}
+            )
+        }
 
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-            hint = stringResource(id = R.string.unit_job),
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
-
-        OutlinedTextInputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp),
-            hint = stringResource(id = R.string.notes),
-            singleLine = false,
-            enabled = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            onDoneClicked = {}
-        )
-
+        (data.data?.rating_type)?.let {
+            OutlinedTextInputField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(
+                        start = 15.dp,
+                        end = 15.dp,
+                        top = 15.dp,
+                        bottom = 15.dp
+                    ),
+                hint = stringResource(id = R.string.notes),
+                singleLine = false,
+                enabled = false,
+                text = it,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                onDoneClicked = {}
+            )
+        }
     }
 }
 
@@ -314,7 +381,9 @@ private fun BottomBarContent() {
 }
 
 @Composable
-private fun StatusCard(viewModel: SoldierViewModel) {
+private fun StatusCard(
+    data: Resource<Soldier>
+) {
     Card(
         modifier = Modifier
             .wrapContentHeight()
