@@ -17,6 +17,8 @@ import com.mayv.ctgate.screens.home.HomeScreen
 @Composable
 fun DrawerNavigation(mainNavController: NavController, drawerNavController: NavController, paddingValues: PaddingValues) {
 
+    // CODE_REVIEW: It's not correct to have 2 nav hosts inside the same app, you should have only one nav host which includes all your screen
+    // and then you can implement the drawer at the highest level of the nav host, and you just hide it on splash screen, and show it for the other screens.
     NavHost(
         modifier = Modifier.padding(paddingValues = paddingValues),
         navController = drawerNavController as NavHostController,

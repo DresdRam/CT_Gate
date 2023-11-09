@@ -76,6 +76,9 @@ fun AppNavigation() {
                 )
             }) {
 
+            // CODE_REVIEW: it a very critical mistake to declare the viewmodel here, you can inject it directly in the compose fun exactly as you're doing.
+            // if you kept it here, every time the viewmodel has any update from inside, it will call the following line again and over again, which leads to open SoldierScreen() multiple times.
+            // so just remove the viewmodel from here, everything should work completely fine.
             val viewModel = hiltViewModel<SoldierViewModel>()
             SoldierScreen(navigationController, viewModel)
         }
