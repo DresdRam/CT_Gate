@@ -3,6 +3,7 @@ package com.mayv.ctgate.screens.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,15 +33,20 @@ import com.mayv.ctgate.components.BannerText
 import com.mayv.ctgate.components.CairoTrafficLogo
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.navigation.AppScreens
+import com.mayv.ctgate.screens.drawer.ScreenWithDrawer
 
 
 @Composable
-fun HomeScreen(mainNavController: NavController, drawerNavController: NavController) {
-    MainSurface(mainNavController, drawerNavController)
+fun HomeScreen(mainNavController: NavController) {
+    ScreenWithDrawer(navController = mainNavController) {
+        MainSurface(mainNavController)
+    }
 }
 
+
+
 @Composable
-fun MainSurface(mainNavController: NavController, drawerNavController: NavController) {
+fun MainSurface(mainNavController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {

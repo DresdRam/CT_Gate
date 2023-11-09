@@ -7,7 +7,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mayv.ctgate.screens.drawer.DrawerScreen
+import com.mayv.ctgate.screens.attendance.AttendanceScreen
+import com.mayv.ctgate.screens.count.CountScreen
+import com.mayv.ctgate.screens.enters.EntersScreen
+import com.mayv.ctgate.screens.exits.ExitsScreen
+import com.mayv.ctgate.screens.home.HomeScreen
 import com.mayv.ctgate.screens.search.SearchScreen
 import com.mayv.ctgate.screens.soldier.SoldierScreen
 import com.mayv.ctgate.screens.soldier.SoldierViewModel
@@ -109,34 +113,24 @@ fun AppNavigation() {
             SplashScreen(navigationController)
         }
 
-        composable(
-            route = AppScreens.DrawerScreen.name,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(transitionSpeed)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(transitionSpeed)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(transitionSpeed)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(transitionSpeed)
-                )
-            }
-        ) {
-            DrawerScreen(navigationController)
+        composable(AppScreens.AttendanceScreen.name) {
+            AttendanceScreen(mainNavController = navigationController)
+        }
+
+        composable(AppScreens.CountScreen.name) {
+            CountScreen(mainNavController = navigationController)
+        }
+
+        composable(AppScreens.EntersScreen.name) {
+            EntersScreen(mainNavController = navigationController)
+        }
+
+        composable(AppScreens.ExitsScreen.name) {
+            ExitsScreen(mainNavController = navigationController)
+        }
+
+        composable(AppScreens.HomeScreen.name) {
+            HomeScreen(mainNavController = navigationController)
         }
     }
 }
