@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun CountScreen(mainNavController: NavController, drawerNavController: NavController){
+fun CountScreen(mainNavController: NavController){
     MainSurface()
 }
 

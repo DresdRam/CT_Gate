@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun AttendanceScreen(mainNavController: NavController, drawerNavController: NavController,){
+fun AttendanceScreen(mainNavController: NavController){
     MainSurface()
 }
 

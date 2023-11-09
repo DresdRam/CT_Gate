@@ -46,21 +46,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
-import com.mayv.ctgate.navigation.DrawerNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
-@Composable
-fun DrawerScreen(navController: NavController) {
-    MainScaffold(navController = navController)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(navController: NavController) {
-
-    val drawerNavController = rememberNavController()
+fun ScreenWithDrawer(navController: NavController, content: @Composable () -> Unit) {
 
     val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -106,22 +97,22 @@ private fun MainScaffold(navController: NavController) {
         }
     ) { paddingValues ->
 
-        ScreenNavigation(
+        ScreenWithDrawerMenu(
             drawerState = drawerState,
             navController = navController,
             paddingValues = paddingValues,
-            drawerNavController = drawerNavController
+            content = content
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenNavigation(
+private fun ScreenWithDrawerMenu(
     navController: NavController,
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     paddingValues: PaddingValues,
-    drawerNavController: NavController
+    content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerItemList: List<String> = listOf("الرئيسية", "دخول", "خروج", "تحضير", "حصر")
@@ -158,7 +149,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.white),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.HomeScreen.name
                                         )
                                     }
@@ -169,7 +160,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.green),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.EntersScreen.name
                                         )
                                     }
@@ -180,7 +171,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.red),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.ExitsScreen.name
                                         )
                                     }
@@ -191,7 +182,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.AttendanceScreen.name
                                         )
                                     }
@@ -202,7 +193,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.CountScreen.name
                                         )
                                     }
@@ -213,7 +204,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = ""
                                         )
                                     }
@@ -224,7 +215,7 @@ fun ScreenNavigation(
                 }
             }
         ) {
-            DrawerNavigation(navController, drawerNavController, paddingValues)
+            content()
         }
     }
 }
@@ -251,7 +242,9 @@ fun DrawerItem(
                 }
 
                 if (currentRoute != screen) {
-                    navController.popBackStack()
+                    if (currentRoute != AppScreens.HomeScreen.name) {
+                        navController.popBackStack()
+                    }
                     navController.navigate(screen)
                 }
             },
