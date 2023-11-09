@@ -33,6 +33,7 @@ class SoldierViewModel @Inject constructor(private val soldierRepository: Soldie
     }
 
     fun soldierData(nationalId: Long) {
+         // CODE_REVIEW: you should fetch api using io dispatcher, not the main dispatcher which blockes the UI thread until it finishes.
         viewModelScope.launch(Dispatchers.Main) {
             if (nationalId.toString().isEmpty()) return@launch
 
