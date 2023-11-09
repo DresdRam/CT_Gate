@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.sp
@@ -29,9 +30,10 @@ fun OutlinedTextInputField(
     modifier: Modifier,
     text: String = "",
     hint: String,
+    align: TextAlign = TextAlign.Justify,
     singleLine: Boolean = true,
     enabled: Boolean = true,
-    keyboardOptions: KeyboardOptions,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     onDoneClicked: (String) -> Unit
 ) {
     var value by remember { mutableStateOf(text) }
@@ -54,7 +56,8 @@ fun OutlinedTextInputField(
         singleLine = singleLine,
         textStyle = TextStyle(
             textDirection = TextDirection.Content,
-            color = Color(0xFF000000)
+            color = Color(0xFF000000),
+            textAlign = align
         ),
         keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(

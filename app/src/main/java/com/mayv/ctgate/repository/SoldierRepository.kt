@@ -1,6 +1,7 @@
 package com.mayv.ctgate.repository
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.mayv.ctgate.data.Resource
 import com.mayv.ctgate.model.Soldier
 import com.mayv.ctgate.network.SMISApi
@@ -41,6 +42,16 @@ class SoldierRepository @Inject constructor(private val api: SMISApi) {
         }
 
         return imageResource
+    }
+
+    suspend fun checkConnection(): Boolean {
+        return try {
+            val res = api.checkConnection()
+            res.code() == 404 || res.code() == 500
+        }catch (exception: Exception){
+            Log.e("Connection", "checkConnection: ${exception.message}")
+            false
+        }
     }
 
 }

@@ -84,7 +84,7 @@ private fun MainScaffold(navController: NavController) {
                             }
                         },
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(top = 8.dp, start = 8.dp)
                             .align(Alignment.CenterStart)
                     ) {
                         if (isOpen) {

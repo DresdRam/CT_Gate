@@ -29,6 +29,7 @@ class SoldierViewModel @Inject constructor(private val soldierRepository: Soldie
 
             _image.value = soldierRepository.getSoldierImage(nationalId)
 
+            soldierRepository.checkConnection()
         }
     }
 

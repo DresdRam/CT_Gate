@@ -17,10 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
-import com.mayv.ctgate.model.Log
+import com.mayv.ctgate.model.GateLog
 
 @Composable
 fun ExitsScreen(mainNavController: NavController, drawerNavController: NavController){
@@ -76,7 +72,7 @@ fun ExitsScreen(mainNavController: NavController, drawerNavController: NavContro
 
                 items(items = list, itemContent = { item ->
 
-                    ListItem(log = item, list.indexOf(item) + 1)
+                    ListItem(gateLog = item, list.indexOf(item) + 1)
 
                 })
             }
@@ -87,7 +83,7 @@ fun ExitsScreen(mainNavController: NavController, drawerNavController: NavContro
 
 
 @Composable
-private fun ListItem(log: Log, number: Int) {
+private fun ListItem(gateLog: GateLog, number: Int) {
 
     Card(
         shape = RoundedCornerShape(15.dp), colors = CardDefaults.cardColors(
@@ -127,7 +123,7 @@ private fun ListItem(log: Log, number: Int) {
             }
 
             Text(
-                text = log.name,
+                text = gateLog.soldier.name,
                 fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -136,7 +132,7 @@ private fun ListItem(log: Log, number: Int) {
             )
 
             Text(
-                text = log.service.plus(" - ").plus(log.nationalId),
+                text = gateLog.service_location.plus(" - ").plus(gateLog.soldier.national_id),
                 fontSize = 14.sp,
                 color = Color.White,
                 textAlign = TextAlign.Center,
@@ -148,107 +144,27 @@ private fun ListItem(log: Log, number: Int) {
     }
 }
 
-private fun createDummyData(): List<Log> {
+private fun createDummyData(): List<GateLog> {
     return listOf(
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
-        Log(
-            "محمود احمد صلاح الدين عبدلحميد ابراهيم",
-            "30003280201298",
-            "دورية صباحية - امام الجوازات بالعباسية"
-        ),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
+        GateLog(),
     ).asReversed()
 }

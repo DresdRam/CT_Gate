@@ -20,4 +20,5 @@
     <string name="phone_number">رقم الهاتف</string>
     <string name="enrollment_date">التجنيد</string>
     <string name="unit">الوحدة</string>
+    <string name="no_conncetion">لا يوجد اتصال بالخادم</string>
 </resources>
