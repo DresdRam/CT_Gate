@@ -19,6 +19,7 @@ fun DrawerNavigation(mainNavController: NavController, drawerNavController: NavC
 
     // CODE_REVIEW: It's not correct to have 2 nav hosts inside the same app, you should have only one nav host which includes all your screen
     // and then you can implement the drawer at the highest level of the nav host, and you just hide it on splash screen, and show it for the other screens.
+    // another solution is to have the drawer logic over the home screen, look to the branch that i created with an example of that "branch= refactor_navigation_structure"
     NavHost(
         modifier = Modifier.padding(paddingValues = paddingValues),
         navController = drawerNavController as NavHostController,
