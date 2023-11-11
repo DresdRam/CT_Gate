@@ -32,17 +32,20 @@ import com.mayv.ctgate.components.BannerText
 import com.mayv.ctgate.components.CairoTrafficLogo
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.navigation.AppScreens
+import com.mayv.ctgate.screens.drawer.DrawerScreen
 
 
 @Composable
-fun HomeScreen(mainNavController: NavController, drawerNavController: NavController) {
-    MainSurface(mainNavController, drawerNavController)
+fun HomeScreen(navigationController: NavController) {
+    DrawerScreen(navController = navigationController) {
+        MainSurface(navigationController)
+    }
 }
 
 @Composable
-fun MainSurface(mainNavController: NavController, drawerNavController: NavController) {
+fun MainSurface(navigationController: NavController) {
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(top = 60.dp)
     ) {
         Box(
             modifier = Modifier
@@ -81,7 +84,7 @@ fun MainSurface(mainNavController: NavController, drawerNavController: NavContro
                     hint = stringResource(id = R.string.national_id),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 ) { text ->
-                    mainNavController.navigate(AppScreens.SoldierScreen.name)
+                    navigationController.navigate(AppScreens.SoldierScreen.name)
                 }
 
                 Box(
@@ -129,7 +132,7 @@ fun MainSurface(mainNavController: NavController, drawerNavController: NavContro
                     hint = stringResource(id = R.string.name),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 ) { text ->
-                    mainNavController.navigate(AppScreens.SoldierScreen.name)
+                    navigationController.navigate(AppScreens.SoldierScreen.name)
                 }
 
                 BannerText(

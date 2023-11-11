@@ -1,5 +1,6 @@
 package com.mayv.ctgate.screens.drawer
 
+import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -46,21 +47,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
-import com.mayv.ctgate.navigation.DrawerNavigation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun DrawerScreen(navController: NavController) {
-    MainScaffold(navController = navController)
+fun DrawerScreen(navController: NavController, drawerMainContent: @Composable () -> Unit) {
+    MainScaffold(navController = navController, drawerMainContent= drawerMainContent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(navController: NavController) {
-
-    val drawerNavController = rememberNavController()
+private fun MainScaffold(navController: NavController, drawerMainContent: @Composable () ->Unit) {
 
     val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -106,22 +104,22 @@ private fun MainScaffold(navController: NavController) {
         }
     ) { paddingValues ->
 
-        ScreenNavigation(
+        MainDrawerScreen(
             drawerState = drawerState,
             navController = navController,
             paddingValues = paddingValues,
-            drawerNavController = drawerNavController
+            drawerMainContent = drawerMainContent
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenNavigation(
+fun MainDrawerScreen(
     navController: NavController,
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     paddingValues: PaddingValues,
-    drawerNavController: NavController
+    drawerMainContent: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerItemList: List<String> = listOf("الرئيسية", "دخول", "خروج", "تحضير", "حصر")
@@ -158,7 +156,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.white),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.HomeScreen.name
                                         )
                                     }
@@ -169,7 +167,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.green),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.EntersScreen.name
                                         )
                                     }
@@ -180,7 +178,7 @@ fun ScreenNavigation(
                                             color = colorResource(id = R.color.red),
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.ExitsScreen.name
                                         )
                                     }
@@ -191,7 +189,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.AttendanceScreen.name
                                         )
                                     }
@@ -202,7 +200,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = AppScreens.CountScreen.name
                                         )
                                     }
@@ -213,7 +211,7 @@ fun ScreenNavigation(
                                             color = Color.White,
                                             coroutineScope = coroutineScope,
                                             drawerState = drawerState,
-                                            navController = drawerNavController,
+                                            navController = navController,
                                             screen = ""
                                         )
                                     }
@@ -224,7 +222,7 @@ fun ScreenNavigation(
                 }
             }
         ) {
-            DrawerNavigation(navController, drawerNavController, paddingValues)
+            drawerMainContent()
         }
     }
 }
@@ -245,13 +243,16 @@ fun DrawerItem(
             .width(150.dp)
             .clickable {
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
+                Log.d("TAG", "DrawerItem: Current Route -> $currentRoute")
 
                 coroutineScope.launch {
                     drawerState.close()
                 }
 
                 if (currentRoute != screen) {
-                    navController.popBackStack()
+                    if (currentRoute != AppScreens.HomeScreen.name) {
+                        navController.popBackStack()
+                    }
                     navController.navigate(screen)
                 }
             },

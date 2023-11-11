@@ -1,7 +1,5 @@
 package com.mayv.ctgate.screens.soldier
 
-import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,14 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,9 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
+import com.mayv.ctgate.components.BackButton
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
-import com.mayv.ctgate.components.serverConnectionError
+import com.mayv.ctgate.components.ServerConnectionError
 import com.mayv.ctgate.data.Resource
 import com.mayv.ctgate.model.Soldier
 import com.mayv.ctgate.utils.DateType
@@ -63,22 +59,21 @@ fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = hi
 
     LaunchedEffect(key1 = Unit) {
         viewModel.soldierData(30003280201298)
-        viewModel.soldierImage(300030280201298)
+        viewModel.soldierImage(30003280201298)
     }
 
-    val soldierData by viewModel.data.collectAsState()
-    val soldierImage by viewModel.image.collectAsState()
-
-    MainScaffold(navController, soldierData, soldierImage)
+    MainScaffold(navController, viewModel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScaffold(
     navController: NavController,
-    data: Resource<Soldier>,
-    image: Resource<Bitmap>
+    viewModel: SoldierViewModel
 ) {
+
+    val soldierData by viewModel.data.collectAsState()
+    val soldierImage by viewModel.image.collectAsState()
 
     //val conf = Bitmap.Config.ARGB_8888
     //val bitmap = Bitmap.createBitmap(20, 20, conf)
@@ -88,7 +83,7 @@ private fun MainScaffold(
             .fillMaxSize(),
         containerColor = Color.Transparent,
         bottomBar = {
-            if (!data.loading && !data.failed) {
+            if (!soldierData.loading && !soldierData.failed) {
                 BottomAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,100 +96,71 @@ private fun MainScaffold(
             }
         }
     ) { paddingValues ->
+
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             color = colorResource(id = R.color.background_grey)
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth(),
+                propagateMinConstraints = false
             ) {
-                if (!data.failed && !data.loading) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    shape = RoundedCornerShape(0.dp, 0.dp, 100.dp, 100.dp),
+                    colors = CardDefaults.cardColors(colorResource(id = R.color.primary_color))
+                ) {
+                    BackButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        navController = navController
+                    )
+                }
+            }
+
+            if (!soldierData.failed && !soldierData.loading) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(paddingValues = paddingValues),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                ) {
+
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp),
-                        propagateMinConstraints = false
+                            .padding(top = 40.dp)
                     ) {
                         Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp),
-                            shape = RoundedCornerShape(0.dp, 0.dp, 100.dp, 100.dp),
-                            colors = CardDefaults.cardColors(colorResource(id = R.color.primary_color))
+                            modifier = Modifier.size(240.dp, 340.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = CardDefaults.cardElevation(15.dp)
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        navController.popBackStack()
-                                    },
-                                    modifier = Modifier
-                                        .padding(top = 8.dp, start = 8.dp)
-                                        .align(Alignment.CenterStart)
-                                ) {
-                                    Icon(
-                                        Icons.Rounded.ArrowBack,
-                                        contentDescription = "MenuButton",
-                                        tint = Color.White
-                                    )
-
-                                }
+                            (soldierImage.data)?.let {
+                                Image(
+                                    modifier = Modifier.fillMaxSize(),
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = stringResource(id = R.string.soldier_image),
+                                    contentScale = ContentScale.FillBounds
+                                )
                             }
                         }
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .padding(paddingValues = paddingValues),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(15.dp),
-                    ) {
+                    StatusCard(soldierData)
 
-                        if (data.loading) {
-                            Log.d("TAG", "MainScaffold: loading -> ${data.loading}")
-                            Log.d("TAG", "MainScaffold: data -> ${data.data}")
-                            Log.d("TAG", "MainScaffold: exception -> ${data.exception?.message}")
-                        } else {
-                            Log.d("TAG", "MainScaffold: loading -> ${data.loading}")
-                            Log.d("TAG", "MainScaffold: data -> ${data.data}")
-                            Log.d("TAG", "MainScaffold: exception -> ${data.exception?.message}")
-                        }
+                    InfoCard(soldierData)
 
-                        Box(
-                            modifier = Modifier
-                                .padding(top = 40.dp)
-                        ) {
-                            Card(
-                                modifier = Modifier.size(240.dp, 340.dp),
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = CardDefaults.cardElevation(15.dp)
-                            ) {
-                                (image.data)?.let {
-                                    Image(
-                                        modifier = Modifier.fillMaxSize(),
-                                        bitmap = it.asImageBitmap(),
-                                        contentDescription = stringResource(id = R.string.soldier_image),
-                                        contentScale = ContentScale.FillBounds
-                                    )
-                                }
-                            }
-                        }
-
-                        StatusCard(data)
-
-                        InfoCard(data)
-
-                    }
-                } else if (data.failed) {
-                    serverConnectionError(modifier = Modifier.size(120.dp))
                 }
+            } else if (soldierData.failed) {
+
+                ServerConnectionError(modifier = Modifier.size(120.dp))
             }
         }
     }

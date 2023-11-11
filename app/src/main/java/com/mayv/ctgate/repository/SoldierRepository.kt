@@ -22,6 +22,7 @@ class SoldierRepository @Inject constructor(private val api: SMISApi) {
         }catch (exception: Exception){
             soldierResource.loading = false
             soldierResource.failed = true
+            Log.e("TAG", "getSoldierData: ${exception.message}")
             soldierResource.exception = exception
         }
 
@@ -38,13 +39,14 @@ class SoldierRepository @Inject constructor(private val api: SMISApi) {
         }catch (exception: Exception){
             imageResource.loading = false
             imageResource.failed = true
+            Log.e("TAG", "getSoldierImage: ${exception.message}")
             imageResource.exception = exception
         }
 
         return imageResource
     }
 
-    suspend fun checkConnection(): Boolean {
+    suspend fun connectedToServer(): Boolean {
         return try {
             val res = api.checkConnection()
             res.code() == 404 || res.code() == 500

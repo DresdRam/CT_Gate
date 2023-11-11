@@ -3,14 +3,16 @@ package com.mayv.ctgate.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mayv.ctgate.screens.drawer.DrawerScreen
+import com.mayv.ctgate.screens.attendance.AttendanceScreen
+import com.mayv.ctgate.screens.count.CountScreen
+import com.mayv.ctgate.screens.enters.EntersScreen
+import com.mayv.ctgate.screens.exits.ExitsScreen
+import com.mayv.ctgate.screens.home.HomeScreen
 import com.mayv.ctgate.screens.search.SearchScreen
 import com.mayv.ctgate.screens.soldier.SoldierScreen
-import com.mayv.ctgate.screens.soldier.SoldierViewModel
 import com.mayv.ctgate.screens.splash.SplashScreen
 
 @Composable
@@ -20,27 +22,23 @@ fun AppNavigation() {
 
     NavHost(navController = navigationController, startDestination = AppScreens.SplashScreen.name) {
 
-        composable(
-            route = AppScreens.SearchScreen.name,
+        composable(route = AppScreens.SearchScreen.name,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            exitTransition = {
+            }, exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popEnterTransition = {
+            }, popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popExitTransition = {
+            }, popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
@@ -49,58 +47,49 @@ fun AppNavigation() {
             SearchScreen(navigationController)
         }
 
-        composable(
-            route = AppScreens.SoldierScreen.name,
+        composable(route = AppScreens.SoldierScreen.name,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            exitTransition = {
+            }, exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popEnterTransition = {
+            }, popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popExitTransition = {
+            }, popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
             }) {
 
-            val viewModel = hiltViewModel<SoldierViewModel>()
-            SoldierScreen(navigationController, viewModel)
+            SoldierScreen(navigationController)
         }
 
-        composable(
-            route = AppScreens.SplashScreen.name,
+        composable(route = AppScreens.SplashScreen.name,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            exitTransition = {
+            }, exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popEnterTransition = {
+            }, popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popExitTransition = {
+            }, popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
@@ -109,34 +98,129 @@ fun AppNavigation() {
             SplashScreen(navigationController)
         }
 
-        composable(
-            route = AppScreens.DrawerScreen.name,
+        composable(AppScreens.AttendanceScreen.name,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            exitTransition = {
+            }, exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popEnterTransition = {
+            }, popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
-            },
-            popExitTransition = {
+            }, popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(transitionSpeed)
                 )
-            }
-        ) {
-            DrawerScreen(navigationController)
+            }) {
+            AttendanceScreen(navigationController = navigationController)
+        }
+
+        composable(AppScreens.CountScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            CountScreen(navigationController = navigationController)
+        }
+
+        composable(AppScreens.EntersScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            EntersScreen(navigationController = navigationController)
+        }
+
+        composable(AppScreens.ExitsScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            ExitsScreen(navigationController = navigationController)
+        }
+
+        composable(AppScreens.HomeScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            HomeScreen(navigationController = navigationController)
         }
     }
 }

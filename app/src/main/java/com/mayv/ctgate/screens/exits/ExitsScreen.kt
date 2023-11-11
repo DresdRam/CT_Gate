@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,45 +20,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
+import com.mayv.ctgate.components.BackButton
 import com.mayv.ctgate.model.GateLog
 
 @Composable
-fun ExitsScreen(mainNavController: NavController, drawerNavController: NavController){
+fun ExitsScreen(navigationController: NavController) {
 
     val list = createDummyData()
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+            .fillMaxSize(),
+        color = Color.White
     ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp),
+                colors = CardDefaults.cardColors(colorResource(id = R.color.primary_color))
+            ) {
 
-                IconButton(
-                    onClick = {
-
-                    },
-                    modifier = Modifier
-                        .padding(top = 10.dp, start = 7.dp, bottom = 10.dp)
-                        .align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_arrow_back),
-                        contentDescription = "MenuButton",
-                        tint = colorResource(id = R.color.gradient_color)
-                    )
-                }
+                BackButton(
+                    modifier = Modifier,
+                    navController = navigationController
+                )
             }
 
             LazyColumn(

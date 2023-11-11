@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,34 +26,54 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
+import com.mayv.ctgate.components.BackButton
 import com.mayv.ctgate.model.GateLog
 
 @Composable
-fun EntersScreen(mainNavController: NavController, drawerNavController: NavController) {
+fun EntersScreen(navigationController: NavController) {
 
     val list = createDummyData()
 
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+            .fillMaxSize(),
+        color = Color.White
     ) {
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                shape = RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp),
+                colors = CardDefaults.cardColors(colorResource(id = R.color.primary_color))
+            ) {
 
-            items(items = list, itemContent = { item ->
+                BackButton(
+                    modifier = Modifier,
+                    navController = navigationController
+                )
+            }
 
-                ListItem(gateLog = item, list.indexOf(element = item) + 1)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
 
-            })
+                items(items = list, itemContent = { item ->
+
+                    ListItem(gateLog = item, list.indexOf(element = item) + 1)
+
+                })
+            }
+
         }
-
     }
 }
 

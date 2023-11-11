@@ -19,7 +19,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mayv.ctgate.R
 
 @Composable
-fun serverConnectionError(modifier: Modifier) {
+fun ServerConnectionError(modifier: Modifier) {
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.server_error_animation))
 
