@@ -84,7 +84,7 @@ fun MainSurface(navigationController: NavController) {
                     hint = stringResource(id = R.string.national_id),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 ) { text ->
-                    navigationController.navigate(AppScreens.SoldierScreen.name)
+                    navigationController.navigate(AppScreens.SoldierScreen.name + "/$text")
                 }
 
                 Box(
@@ -132,7 +132,7 @@ fun MainSurface(navigationController: NavController) {
                     hint = stringResource(id = R.string.name),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 ) { text ->
-                    navigationController.navigate(AppScreens.SoldierScreen.name)
+                    navigationController.navigate(AppScreens.SoldierScreen.name + "/30003280201298")
                 }
 
                 BannerText(

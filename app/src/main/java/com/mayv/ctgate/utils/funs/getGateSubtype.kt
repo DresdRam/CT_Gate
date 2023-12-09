@@ -1,4 +1,4 @@
-package com.mayv.ctgate.utils
+package com.mayv.ctgate.utils.funs
 
 fun getGateSubtype(subtype: Int): String {
     return when (subtype) {

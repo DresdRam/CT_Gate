@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,19 +49,24 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.components.BackButton
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
-import com.mayv.ctgate.components.ServerConnectionError
-import com.mayv.ctgate.data.Resource
-import com.mayv.ctgate.model.Soldier
-import com.mayv.ctgate.utils.DateType
-import com.mayv.ctgate.utils.reformatDate
-import com.mayv.ctgate.utils.shimmer
+import com.mayv.ctgate.components.ServerError
+import com.mayv.ctgate.utils.DateFormat
+import com.mayv.ctgate.utils.PreferenceHelper
+import com.mayv.ctgate.utils.PreferenceHelper.token
+import com.mayv.ctgate.utils.funs.shimmer
 
 @Composable
-fun SoldierScreen(navController: NavController, viewModel: SoldierViewModel = hiltViewModel()) {
+fun SoldierScreen(
+    navController: NavController,
+    nationalId: Long,
+    viewModel: SoldierViewModel = hiltViewModel()
+) {
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.soldierData(30003280201298)
-        viewModel.soldierImage(30003280201298)
+    val preferences = PreferenceHelper.getPreference(LocalContext.current)
+
+    LaunchedEffect(key1 = true) {
+        viewModel.soldierData(nationalId, preferences.token!!)
+        viewModel.soldierImage(nationalId, preferences.token!!)
     }
 
     MainScaffold(navController, viewModel)
@@ -72,18 +79,14 @@ private fun MainScaffold(
     viewModel: SoldierViewModel
 ) {
 
-    val soldierData by viewModel.data.collectAsState()
     val soldierImage by viewModel.image.collectAsState()
-
-    //val conf = Bitmap.Config.ARGB_8888
-    //val bitmap = Bitmap.createBitmap(20, 20, conf)
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         containerColor = Color.Transparent,
         bottomBar = {
-            if (!soldierData.loading && !soldierData.failed) {
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
                 BottomAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -122,26 +125,24 @@ private fun MainScaffold(
                 }
             }
 
-            if (!soldierData.failed && !soldierData.loading) {
-
-                Column(
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(paddingValues = paddingValues),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+            ) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(paddingValues = paddingValues),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                        .padding(top = 40.dp)
                 ) {
-
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 40.dp)
+                    Card(
+                        modifier = Modifier.size(240.dp, 340.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = CardDefaults.cardElevation(15.dp)
                     ) {
-                        Card(
-                            modifier = Modifier.size(240.dp, 340.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            elevation = CardDefaults.cardElevation(15.dp)
-                        ) {
+                        if (!viewModel.isImgLoading && viewModel.isImgSuccessful) {
                             (soldierImage.data)?.let {
                                 Image(
                                     modifier = Modifier.fillMaxSize(),
@@ -150,17 +151,26 @@ private fun MainScaffold(
                                     contentScale = ContentScale.FillBounds
                                 )
                             }
+                        } else if (viewModel.isImgLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .shimmer(),
+                                content = {}
+                            )
                         }
                     }
-
-                    StatusCard(soldierData)
-
-                    InfoCard(soldierData)
-
                 }
-            } else if (soldierData.failed) {
 
-                ServerConnectionError(modifier = Modifier.size(120.dp))
+                StatusCard(viewModel)
+
+                InfoCard(viewModel)
+
+                if (!viewModel.isDataSuccessful) {
+
+                    ServerError(modifier = Modifier.size(120.dp))
+                }
+
             }
         }
     }
@@ -168,8 +178,10 @@ private fun MainScaffold(
 
 @Composable
 private fun InfoCard(
-    data: Resource<Soldier>
+    viewModel: SoldierViewModel
 ) {
+
+    val data by viewModel.data.collectAsState()
 
     Card(
         modifier = Modifier
@@ -181,83 +193,17 @@ private fun InfoCard(
         colors = CardDefaults.cardColors(Color.White)
     ) {
 
-        if (data.data?.name != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                hint = stringResource(id = R.string.name),
-                align = TextAlign.Center,
-                enabled = false,
-                text = data.data!!.name,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .shimmer()
-                )
-            }
-        }
+        data.data?.let {
 
-        if (data.data?.national_id != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                hint = stringResource(id = R.string.national_id),
-                align = TextAlign.Center,
-                enabled = false,
-                text = data.data!!.national_id.toString(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .shimmer()
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-        ) {
-            if (data.data?.enrollment?.holiday_group != null) {
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
                 OutlinedTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 15.dp, end = 5.dp),
-                    hint = stringResource(id = R.string.holiday_group),
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                    hint = stringResource(id = R.string.name),
                     align = TextAlign.Center,
                     enabled = false,
-                    text = data.data!!.enrollment.holiday_group,
+                    text = it.name,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onDoneClicked = {}
                 )
@@ -266,8 +212,7 @@ private fun InfoCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(start = 15.dp, end = 5.dp)
-                        .weight(1f)
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                 )
                 {
                     Box(
@@ -281,16 +226,15 @@ private fun InfoCard(
                 }
             }
 
-            if (data.data?.enrollment?.police_number != null) {
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
                 OutlinedTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 5.dp, end = 15.dp),
-                    hint = stringResource(id = R.string.police_numer),
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                    hint = stringResource(id = R.string.national_id),
                     align = TextAlign.Center,
                     enabled = false,
-                    text = data.data!!.enrollment.police_number.toString(),
+                    text = it.national_id.toString(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onDoneClicked = {}
                 )
@@ -299,47 +243,7 @@ private fun InfoCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(start = 5.dp, end = 15.dp)
-                        .weight(1f)
-                )
-                {
-                    Box(
-                        modifier = Modifier
-                            .clip(shape = RoundedCornerShape(10.dp))
-                            .background(color = Color.LightGray)
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .shimmer()
-                    )
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-        ) {
-            if (data.data?.enrollment?.unit?.name != null) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 15.dp, end = 5.dp),
-                    hint = stringResource(id = R.string.unit),
-                    align = TextAlign.Center,
-                    enabled = false,
-                    text = data.data!!.enrollment.unit.name,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(start = 15.dp, end = 5.dp)
-                        .weight(1f)
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                 )
                 {
                     Box(
@@ -353,26 +257,246 @@ private fun InfoCard(
                 }
             }
 
-            if (data.data?.enrollment?.enrollment_date != null) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 5.dp, end = 15.dp),
-                    hint = stringResource(id = R.string.enrollment_date),
-                    align = TextAlign.Center,
-                    enabled = false,
-                    text = reformatDate(data.data!!.enrollment.enrollment_date, DateType.InfoDate),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+            ) {
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 15.dp, end = 5.dp),
+                        hint = stringResource(id = R.string.holiday_group),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = it.enrollment.holiday_group,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 15.dp, end = 5.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 5.dp, end = 15.dp),
+                        hint = stringResource(id = R.string.police_numer),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = it.enrollment.police_number.toString(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 5.dp, end = 15.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+            ) {
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 15.dp, end = 5.dp),
+                        hint = stringResource(id = R.string.unit),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = it.enrollment.unit.name,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 15.dp, end = 5.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 5.dp, end = 15.dp),
+                        hint = stringResource(id = R.string.enrollment_date),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = DateFormat.reformatDate(it.enrollment.enrollment_date),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 5.dp, end = 15.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+            ) {
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 15.dp, end = 5.dp),
+                        hint = stringResource(id = R.string.phone_number),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = it.phone_number,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 15.dp, end = 5.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+
+                if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(start = 5.dp, end = 15.dp),
+                        hint = stringResource(id = R.string.education),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = it.qualification,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .padding(start = 5.dp, end = 15.dp)
+                            .weight(1f)
+                    )
+                    {
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color.LightGray)
+                                .fillMaxWidth()
+                                .height(60.dp)
+                                .shimmer()
+                        )
+                    }
+                }
+            }
+
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                it.medical_condition.let { md ->
+                    var medicalCondition = "جيد"
+                    if (!md.isNullOrEmpty()) {
+                        medicalCondition = md
+                    }
+                    OutlinedTextInputField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                        hint = stringResource(id = R.string.medical_type),
+                        align = TextAlign.Center,
+                        enabled = false,
+                        text = medicalCondition,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onDoneClicked = {}
+                    )
+                }
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(start = 5.dp, end = 15.dp)
-                        .weight(1f)
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                 )
                 {
                     Box(
@@ -385,23 +509,20 @@ private fun InfoCard(
                     )
                 }
             }
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
-        ) {
-            if (data.data?.phone_number != null) {
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                var governorate = ""
+                if (it.address.isNotEmpty()) {
+                    governorate = it.address[0].governorate.name
+                }
                 OutlinedTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 15.dp, end = 5.dp),
-                    hint = stringResource(id = R.string.phone_number),
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                    hint = stringResource(id = R.string.governorate),
                     align = TextAlign.Center,
                     enabled = false,
-                    text = data.data!!.phone_number,
+                    text = governorate,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onDoneClicked = {}
                 )
@@ -410,8 +531,7 @@ private fun InfoCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(start = 15.dp, end = 5.dp)
-                        .weight(1f)
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                 )
                 {
                     Box(
@@ -425,16 +545,15 @@ private fun InfoCard(
                 }
             }
 
-            if (data.data?.qualification != null) {
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
                 OutlinedTextInputField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 5.dp, end = 15.dp),
-                    hint = stringResource(id = R.string.education),
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                    hint = stringResource(id = R.string.unit_job),
                     align = TextAlign.Center,
                     enabled = false,
-                    text = data.data!!.qualification,
+                    text = it.enrollment.unit_job,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onDoneClicked = {}
                 )
@@ -443,8 +562,7 @@ private fun InfoCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(start = 5.dp, end = 15.dp)
-                        .weight(1f)
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                 )
                 {
                     Box(
@@ -457,141 +575,48 @@ private fun InfoCard(
                     )
                 }
             }
-        }
 
-        if (data.data?.medical_condition != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                hint = stringResource(id = R.string.medical_type),
-                align = TextAlign.Center,
-                enabled = false,
-                text = data.data!!.medical_condition,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-            )
-            {
-                Box(
+            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+                OutlinedTextInputField(
                     modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .shimmer()
-                )
-            }
-        }
-
-        if (data.data?.address?.get(0)?.governorate?.name != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                hint = stringResource(id = R.string.governorate),
-                align = TextAlign.Center,
-                enabled = false,
-                text = data.data!!.address[0].governorate.name,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .shimmer()
-                )
-            }
-        }
-
-        if (data.data?.enrollment?.unit_job != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
-                hint = stringResource(id = R.string.unit_job),
-                align = TextAlign.Center,
-                enabled = false,
-                text = data.data!!.enrollment.unit_job,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .shimmer()
-                )
-            }
-        }
-
-        if (data.data?.getNotesAsString() != null) {
-            OutlinedTextInputField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(
-                        start = 15.dp,
-                        end = 15.dp,
-                        top = 15.dp,
-                        bottom = 15.dp
-                    ),
-                hint = stringResource(id = R.string.notes),
-                align = TextAlign.Center,
-                singleLine = false,
-                enabled = false,
-                text = data.data!!.getNotesAsString(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                onDoneClicked = {}
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(
-                        start = 15.dp,
-                        end = 15.dp,
-                        top = 15.dp,
-                        bottom = 15.dp
-                    )
-            )
-            {
-                Box(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Color.LightGray)
                         .fillMaxWidth()
                         .height(200.dp)
-                        .shimmer()
+                        .padding(
+                            start = 15.dp,
+                            end = 15.dp,
+                            top = 15.dp,
+                            bottom = 15.dp
+                        ),
+                    hint = stringResource(id = R.string.notes),
+                    align = TextAlign.Center,
+                    singleLine = false,
+                    enabled = false,
+                    text = it.getNotesAsString(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    onDoneClicked = {}
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(
+                            start = 15.dp,
+                            end = 15.dp,
+                            top = 15.dp,
+                            bottom = 15.dp
+                        )
+                )
+                {
+                    Box(
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .background(color = Color.LightGray)
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .shimmer()
+                    )
+                }
             }
         }
     }
@@ -627,8 +652,10 @@ private fun BottomBarContent() {
 
 @Composable
 private fun StatusCard(
-    data: Resource<Soldier>
+    viewModel: SoldierViewModel
 ) {
+    val data by viewModel.data.collectAsState()
+
     Card(
         modifier = Modifier
             .wrapContentHeight()
@@ -645,13 +672,29 @@ private fun StatusCard(
                 .padding(top = 10.dp, bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            StatusItemWithIcon("ترقب الوصول", R.drawable.ic_bell, Color.Green)
 
-            StatusItemWithIcon("الحالة الصحية", R.drawable.ic_check, Color.Green)
+            if (!viewModel.isDataLoading) {
+                data.data?.let {
 
-            StatusItemWithText("التقييم", "أ")
-
-            StatusItemWithText("نوع التقييم", "-")
+                    StatusItemWithIcon(
+                        "ترقب الوصول",
+                        R.drawable.ic_bell,
+                        if (it.rating_status) Color.Red else Color.Green
+                    )
+                    StatusItemWithIcon(
+                        "الحالة الصحية",
+                        R.drawable.ic_check,
+                        if (it.medical_condition == "جيد") Color.Green else Color.Red
+                    )
+                    StatusItemWithText("التقييم", it.rating)
+                    StatusItemWithText("نوع التقييم", it.rating_type)
+                }
+            } else {
+                ShimmerStatusItem()
+                ShimmerStatusItem()
+                ShimmerStatusItem()
+                ShimmerStatusItem()
+            }
         }
 
     }
@@ -701,6 +744,35 @@ private fun StatusItemWithIcon(text: String, ic: Int, tint: Color) {
             painter = painterResource(id = ic),
             contentDescription = "Status Icon",
             tint = tint
+        )
+    }
+}
+
+@Composable
+private fun ShimmerStatusItem() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(end = 10.dp)
+                .align(Alignment.CenterEnd)
+                .height(20.dp)
+                .width(80.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .shimmer()
+        )
+
+        Box(
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .align(Alignment.CenterStart)
+                .height(20.dp)
+                .width(20.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .shimmer()
         )
     }
 }

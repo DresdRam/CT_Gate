@@ -38,6 +38,7 @@ fun OutlinedTextInputField(
     colors: TextFieldColors = TextFieldDefaults
         .outlinedTextFieldColors(
             textColor = Color.Black,
+            disabledTextColor = Color.Black,
             unfocusedBorderColor = colorResource(id = R.color.gradient_color),
             disabledBorderColor = Color.Gray,
             focusedLabelColor = hintColor,

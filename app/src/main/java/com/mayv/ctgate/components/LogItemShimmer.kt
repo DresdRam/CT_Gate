@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mayv.ctgate.utils.shimmer
+import com.mayv.ctgate.utils.funs.shimmer
 
 
 @Composable

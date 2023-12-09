@@ -2,6 +2,7 @@ package com.mayv.ctgate.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +30,22 @@ import com.mayv.ctgate.utils.LogType.ENTER
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LogItem(name: String = "", service: String = "", dateTime: String = "", type: String = ENTER) {
+fun LogItem(
+    name: String = "",
+    nationalId: Long = 0,
+    service: String = "",
+    dateTime: String = "",
+    type: String = ENTER,
+    onItemClicked: (nationalId: Long) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
             .padding(start = 10.dp, end = 10.dp)
+            .clickable {
+                onItemClicked(nationalId)
+            }
     ) {
 
         Card(
@@ -76,7 +87,8 @@ fun LogItem(name: String = "", service: String = "", dateTime: String = "", type
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 3.dp),
+                        .padding(bottom = 3.dp)
+                        .basicMarquee(),
                     text = dateTime,
                     color = if (type == ENTER) colorResource(id = R.color.green) else colorResource(
                         id = R.color.red

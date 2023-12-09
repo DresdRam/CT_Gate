@@ -1,6 +1,8 @@
 package com.mayv.ctgate.di
 
 import com.mayv.ctgate.network.SMISApi
+import com.mayv.ctgate.repository.LoginRepository
+import com.mayv.ctgate.repository.LogsRepository
 import com.mayv.ctgate.repository.SoldierRepository
 import com.mayv.ctgate.utils.Constants
 import dagger.Module
@@ -20,6 +22,14 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSoldierRepository(api: SMISApi) = SoldierRepository(api)
+
+    @Singleton
+    @Provides
+    fun provideLogsRepository(api: SMISApi) = LogsRepository(api)
+
+    @Singleton
+    @Provides
+    fun provideLoginRepository(api: SMISApi) = LoginRepository(api)
 
     @Singleton
     @Provides

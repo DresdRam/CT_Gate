@@ -18,7 +18,7 @@ data class Soldier(
 )
 {
     fun getNotesAsString(): String{
-        val builder: StringBuilder = StringBuilder()
+        val builder: StringBuilder = StringBuilder("")
 
         notes.forEach { note ->
             builder.append(note.note).append("\n")

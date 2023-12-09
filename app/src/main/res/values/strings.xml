@@ -4,6 +4,7 @@
     <string name="cairo_traffic_gate">بوابة مرور القاهرة</string>
     <string name="national_id">الرقم القومي</string>
     <string name="name">الاسم</string>
+    <string name="dep_of_soldiers">إدارة شئون المجندين</string>
     <string name="ct_footer">الإدارة العامة لمرور القاهرة\nإدارة المجندين و التدريب</string>
     <string name="ct_management">مدير الإدارة</string>
     <string name="ct_manager">لواء/ حسام رفعت</string>
@@ -20,5 +21,10 @@
     <string name="phone_number">رقم الهاتف</string>
     <string name="enrollment_date">التجنيد</string>
     <string name="unit">الوحدة</string>
-    <string name="no_conncetion">لا يوجد اتصال بالخادم</string>
+    <string name="no_conncetion">! لا يوجد اتصال بالخادم</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="enter">دخول</string>
+    <string name="unauthenticated">خطأ في معلومات التسجيل</string>
 </resources>

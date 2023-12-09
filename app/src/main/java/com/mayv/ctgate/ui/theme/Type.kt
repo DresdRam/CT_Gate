@@ -10,13 +10,13 @@ import androidx.compose.ui.unit.sp
 import com.mayv.ctgate.R
 
 // Set of Material typography styles to start with
-private val defaultFontFamily: FontFamily = FontFamily(Font(R.font.rubik_italic))
-private val arabicFontFamily: FontFamily = FontFamily(Font(R.font.arabic))
+// private val defaultFontFamily: FontFamily = FontFamily(Font(R.font.rubik_italic))
+private val defaultFontFamily: FontFamily = FontFamily(Font(R.font.arabic))
 private val defaultFontColor: Color = Color(0xFF000000)
 
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = arabicFontFamily,
+        fontFamily = defaultFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 24.sp,

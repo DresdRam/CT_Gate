@@ -1,6 +1,5 @@
 package com.mayv.ctgate.screens.splash
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -22,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
-import com.mayv.ctgate.utils.Constants
+import com.mayv.ctgate.utils.PreferenceHelper
+import com.mayv.ctgate.utils.PreferenceHelper.token
 import kotlinx.coroutines.delay
 
 
@@ -42,6 +43,8 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController) {
 
     var startAnimation by remember { mutableStateOf(false) }
+    val preferences = PreferenceHelper.getPreference(LocalContext.current)
+
     val alpha = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 2000),
@@ -52,9 +55,15 @@ fun SplashScreen(navController: NavController) {
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
-        delay(2500)
+        delay(2000)
+        val token = preferences.token
+
         navController.popBackStack()
-        navController.navigate(AppScreens.HomeScreen.name)
+        if(token.isNullOrEmpty() || token.isBlank()) {
+            navController.navigate(AppScreens.LoginScreen.name)
+        } else {
+            navController.navigate(AppScreens.HomeScreen.name)
+        }
     }
 }
 

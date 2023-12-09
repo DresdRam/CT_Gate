@@ -5,55 +5,57 @@ import android.util.Log
 import com.mayv.ctgate.data.Resource
 import com.mayv.ctgate.model.Soldier
 import com.mayv.ctgate.network.SMISApi
-import com.mayv.ctgate.utils.byteArrayToBitmap
+import com.mayv.ctgate.utils.funs.convertByteArrayToBitmap
+import com.mayv.ctgate.utils.funs.getExceptionFromStatusCode
 import javax.inject.Inject
 
 class SoldierRepository @Inject constructor(private val api: SMISApi) {
 
-    private val soldierResource = Resource<Soldier>()
+    suspend fun getSoldierData(nationalId: Long, token: String): Resource<Soldier> {
 
-    private val imageResource = Resource<Bitmap>()
+        val soldierResource = Resource<Soldier>()
 
-    suspend fun getSoldierData(nationalId: Long): Resource<Soldier> {
         try {
-            soldierResource.loading = true
-            soldierResource.data = api.getSoldier(nationalId)
-            soldierResource.loading = false
-        }catch (exception: Exception){
-            soldierResource.loading = false
-            soldierResource.failed = true
+
+            val response = api.getSoldier(nationalId, token)
+            soldierResource.statusCode = response.code()
+
+            if (response.isSuccessful) {
+                soldierResource.data = response.body()
+            } else {
+                soldierResource.exception = getExceptionFromStatusCode(response.code())
+                Log.e("TAG", "getSoldierData: ${soldierResource.exception.message}")
+            }
+        } catch (exception: Exception) {
+            soldierResource.exception = getExceptionFromStatusCode(400)
+            soldierResource.statusCode = 400
             Log.e("TAG", "getSoldierData: ${exception.message}")
-            soldierResource.exception = exception
         }
 
         return soldierResource
     }
 
-    suspend fun getSoldierImage(nationalId: Long): Resource<Bitmap> {
+    suspend fun getSoldierImage(nationalId: Long, token: String): Resource<Bitmap> {
+
+        val imageResource = Resource<Bitmap>()
 
         try {
-            imageResource.loading = true
-            val byteArray = api.getSoldierImage(nationalId).byteStream().readBytes()
-            imageResource.data = byteArrayToBitmap(byteArray)
-            imageResource.loading = false
-        }catch (exception: Exception){
-            imageResource.loading = false
-            imageResource.failed = true
-            Log.e("TAG", "getSoldierImage: ${exception.message}")
-            imageResource.exception = exception
+
+            val response = api.getSoldierImage(nationalId, token)
+            imageResource.statusCode = response.code()
+
+            if (response.isSuccessful) {
+                imageResource.data = response.body()?.byteStream()
+                    ?.let { convertByteArrayToBitmap(it.readBytes()) }
+            } else {
+                imageResource.exception = getExceptionFromStatusCode(response.code())
+            }
+        } catch (exception: Exception) {
+            imageResource.exception = getExceptionFromStatusCode(400)
+            imageResource.statusCode = 400
         }
 
         return imageResource
-    }
-
-    suspend fun connectedToServer(): Boolean {
-        return try {
-            val res = api.checkConnection()
-            res.code() == 404 || res.code() == 500
-        }catch (exception: Exception){
-            Log.e("Connection", "checkConnection: ${exception.message}")
-            false
-        }
     }
 
 }

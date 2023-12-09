@@ -1,4 +1,4 @@
-package com.mayv.ctgate.utils
+package com.mayv.ctgate.utils.funs
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

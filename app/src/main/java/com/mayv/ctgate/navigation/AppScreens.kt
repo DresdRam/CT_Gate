@@ -8,6 +8,7 @@ enum class AppScreens {
     EntersScreen,
     ExitsScreen,
     HomeScreen,
+    LoginScreen,
     SearchScreen,
     SoldierScreen,
     SplashScreen;
@@ -20,10 +21,11 @@ enum class AppScreens {
             EntersScreen.name -> EntersScreen
             ExitsScreen.name -> ExitsScreen
             HomeScreen.name -> HomeScreen
+            LoginScreen.name -> LoginScreen
             SearchScreen.name -> SearchScreen
             SoldierScreen.name -> SoldierScreen
             SplashScreen.name -> SplashScreen
-            null -> SplashScreen
+            null -> LoginScreen
             else -> throw IllegalArgumentException("Route $route is not Recognised.")
         }
     }

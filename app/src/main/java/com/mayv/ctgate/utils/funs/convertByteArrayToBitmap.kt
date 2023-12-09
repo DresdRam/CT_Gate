@@ -1,8 +1,8 @@
-package com.mayv.ctgate.utils
+package com.mayv.ctgate.utils.funs
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 
-fun byteArrayToBitmap(imageData: ByteArray): Bitmap {
+fun convertByteArrayToBitmap(imageData: ByteArray): Bitmap {
     return BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
 }

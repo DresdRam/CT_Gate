@@ -1,42 +1,50 @@
 package com.mayv.ctgate.repository
 
-import android.util.Log
 import com.mayv.ctgate.data.Resource
 import com.mayv.ctgate.model.GateLog
 import com.mayv.ctgate.network.SMISApi
+import com.mayv.ctgate.utils.funs.getExceptionFromStatusCode
 import javax.inject.Inject
 
 class LogsRepository @Inject constructor(private val api: SMISApi) {
 
-    private val allLogsResource: Resource<List<GateLog>> = Resource()
+    suspend fun getAllLogs(page: Int, size: Int, token: String): Resource<List<GateLog>> {
 
-    private val soldierLogsResource: Resource<List<GateLog>> = Resource()
+        val allLogsResource: Resource<List<GateLog>> = Resource()
 
-    suspend fun getAllLogs(page: Int, size: Int): Resource<List<GateLog>> {
         try {
-            allLogsResource.loading = true
-            allLogsResource.data = api.getAllGateLogs(page, size)
-            Log.i("TAG", "getAllLogs: ${api.getAllGateLogs(page, size)}")
-            allLogsResource.loading = false
-        }catch (exception: Exception){
-            allLogsResource.loading = false
-            allLogsResource.failed = true
-            allLogsResource.exception = exception
+            val response = api.getAllGateLogs(page, size, token)
+            allLogsResource.statusCode = response.code()
+
+            if (response.isSuccessful) {
+                allLogsResource.data = response.body()
+            } else {
+                allLogsResource.exception = getExceptionFromStatusCode(response.code())
+            }
+        } catch (exception: Exception) {
+            allLogsResource.exception = getExceptionFromStatusCode(400)
+            allLogsResource.statusCode = 400
         }
 
         return allLogsResource
     }
 
-    suspend fun getSoldierLogs(nationalId: Long): Resource<List<GateLog>> {
+    suspend fun getSoldierLogs(nationalId: Long, token: String): Resource<List<GateLog>> {
+
+        val soldierLogsResource: Resource<List<GateLog>> = Resource()
 
         try {
-            soldierLogsResource.loading = true
-            soldierLogsResource.data = api.getSoldierLogs(nationalId)
-            soldierLogsResource.loading = false
-        }catch (exception: Exception){
-            soldierLogsResource.loading = false
-            soldierLogsResource.failed = true
-            soldierLogsResource.exception = exception
+            val response = api.getSoldierLogs(nationalId, token)
+            soldierLogsResource.statusCode = response.code()
+
+            if (response.isSuccessful) {
+                soldierLogsResource.data = response.body()
+            } else {
+                soldierLogsResource.exception = getExceptionFromStatusCode(response.code())
+            }
+        } catch (exception: Exception) {
+            soldierLogsResource.exception = getExceptionFromStatusCode(400)
+            soldierLogsResource.statusCode = 400
         }
 
         return soldierLogsResource

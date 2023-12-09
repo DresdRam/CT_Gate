@@ -38,15 +38,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.navigation.AppScreens
+import com.mayv.ctgate.utils.PreferenceHelper
+import com.mayv.ctgate.utils.PreferenceHelper.token
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -123,6 +126,7 @@ fun MainDrawerScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerItemList: List<String> = listOf("الرئيسية", "دخول", "خروج", "تحضير", "حصر")
+    val preferences = PreferenceHelper.getPreference(LocalContext.current)
 
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
 
@@ -139,9 +143,31 @@ fun MainDrawerScreen(
 
                     Box(modifier = Modifier.fillMaxSize()) {
 
-                        LazyColumn(
+                        Box(
                             modifier = Modifier
-                                .padding(top = 15.dp)
+                                .fillMaxWidth()
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    preferences.token = ""
+                                    navController.popBackStack()
+                                    navController.navigate(AppScreens.LoginScreen.name)
+                                },
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .align(Alignment.CenterEnd)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_logout),
+                                    contentDescription = "Logout Button",
+                                    tint = colorResource(id = R.color.gradient_color)
+                                )
+                            }
+                        }
+
+                            LazyColumn(
+                            modifier = Modifier
+                                .padding(top = 15.dp, bottom = 10.dp)
                                 .align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(20.dp)
