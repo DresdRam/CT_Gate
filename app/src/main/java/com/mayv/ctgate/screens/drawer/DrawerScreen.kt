@@ -163,11 +163,25 @@ fun MainDrawerScreen(
                                     tint = colorResource(id = R.color.gradient_color)
                                 )
                             }
+
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(AppScreens.SettingsScreen.name)
+                                },
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_settings),
+                                    contentDescription = "Settings Button",
+                                    tint = colorResource(id = R.color.gradient_color)
+                                )
+                            }
                         }
 
                             LazyColumn(
                             modifier = Modifier
-                                .padding(top = 15.dp, bottom = 10.dp)
+                                .padding(top = 45.dp, bottom = 10.dp)
                                 .align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(20.dp)

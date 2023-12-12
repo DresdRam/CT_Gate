@@ -47,9 +47,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mayv.ctgate.R
 import com.mayv.ctgate.components.BackButton
+import com.mayv.ctgate.components.LottieAnimationView
 import com.mayv.ctgate.components.OutlinedTextInputField
 import com.mayv.ctgate.components.RoundedButton
-import com.mayv.ctgate.components.ServerError
 import com.mayv.ctgate.utils.DateFormat
 import com.mayv.ctgate.utils.PreferenceHelper
 import com.mayv.ctgate.utils.PreferenceHelper.token
@@ -57,9 +57,7 @@ import com.mayv.ctgate.utils.funs.shimmer
 
 @Composable
 fun SoldierScreen(
-    navController: NavController,
-    nationalId: Long,
-    viewModel: SoldierViewModel = hiltViewModel()
+    navController: NavController, nationalId: Long, viewModel: SoldierViewModel = hiltViewModel()
 ) {
 
     val preferences = PreferenceHelper.getPreference(LocalContext.current)
@@ -75,30 +73,24 @@ fun SoldierScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScaffold(
-    navController: NavController,
-    viewModel: SoldierViewModel
+    navController: NavController, viewModel: SoldierViewModel
 ) {
 
     val soldierImage by viewModel.image.collectAsState()
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        containerColor = Color.Transparent,
-        bottomBar = {
-            if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                BottomAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    contentColor = Color.Transparent,
-                    containerColor = Color.Transparent
-                ) {
-                    BottomBarContent()
-                }
+    Scaffold(modifier = Modifier.fillMaxSize(), containerColor = Color.Transparent, bottomBar = {
+        if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
+            BottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                contentColor = Color.Transparent,
+                containerColor = Color.Transparent
+            ) {
+                BottomBarContent()
             }
         }
-    ) { paddingValues ->
+    }) { paddingValues ->
 
         Surface(
             modifier = Modifier
@@ -107,9 +99,7 @@ private fun MainScaffold(
             color = colorResource(id = R.color.background_grey)
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                propagateMinConstraints = false
+                modifier = Modifier.fillMaxWidth(), propagateMinConstraints = false
             ) {
                 Card(
                     modifier = Modifier
@@ -119,8 +109,7 @@ private fun MainScaffold(
                     colors = CardDefaults.cardColors(colorResource(id = R.color.primary_color))
                 ) {
                     BackButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        navController = navController
+                        modifier = Modifier.fillMaxWidth(), navController = navController
                     )
                 }
             }
@@ -134,8 +123,7 @@ private fun MainScaffold(
                 verticalArrangement = Arrangement.spacedBy(15.dp),
             ) {
                 Box(
-                    modifier = Modifier
-                        .padding(top = 40.dp)
+                    modifier = Modifier.padding(top = 40.dp)
                 ) {
                     Card(
                         modifier = Modifier.size(240.dp, 340.dp),
@@ -152,11 +140,9 @@ private fun MainScaffold(
                                 )
                             }
                         } else if (viewModel.isImgLoading) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .shimmer(),
-                                content = {}
+                            Box(modifier = Modifier
+                                .fillMaxSize()
+                                .shimmer(), content = {}
                             )
                         }
                     }
@@ -168,7 +154,11 @@ private fun MainScaffold(
 
                 if (!viewModel.isDataSuccessful) {
 
-                    ServerError(modifier = Modifier.size(120.dp))
+                    LottieAnimationView(
+                        modifier = Modifier.size(120.dp),
+                        message = "خطأ في المعلومات !",
+                        R.raw.error_animation
+                    )
                 }
 
             }
@@ -196,25 +186,22 @@ private fun InfoCard(
         data.data?.let {
 
             if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                OutlinedTextInputField(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
                     hint = stringResource(id = R.string.name),
                     align = TextAlign.Center,
                     enabled = false,
                     text = it.name,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+                    onDoneClicked = {})
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -227,25 +214,22 @@ private fun InfoCard(
             }
 
             if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                OutlinedTextInputField(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
                     hint = stringResource(id = R.string.national_id),
                     align = TextAlign.Center,
                     enabled = false,
                     text = it.national_id.toString(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+                    onDoneClicked = {})
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -263,18 +247,16 @@ private fun InfoCard(
                     .padding(top = 15.dp)
             ) {
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 15.dp, end = 5.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
                         hint = stringResource(id = R.string.holiday_group),
                         align = TextAlign.Center,
                         enabled = false,
                         text = it.enrollment.holiday_group,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -282,8 +264,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 15.dp, end = 5.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -296,18 +277,16 @@ private fun InfoCard(
                 }
 
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 5.dp, end = 15.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
                         hint = stringResource(id = R.string.police_numer),
                         align = TextAlign.Center,
                         enabled = false,
                         text = it.enrollment.police_number.toString(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -315,8 +294,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 5.dp, end = 15.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -335,18 +313,16 @@ private fun InfoCard(
                     .padding(top = 15.dp)
             ) {
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 15.dp, end = 5.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
                         hint = stringResource(id = R.string.unit),
                         align = TextAlign.Center,
                         enabled = false,
                         text = it.enrollment.unit.name,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -354,8 +330,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 15.dp, end = 5.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -368,18 +343,16 @@ private fun InfoCard(
                 }
 
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 5.dp, end = 15.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
                         hint = stringResource(id = R.string.enrollment_date),
                         align = TextAlign.Center,
                         enabled = false,
                         text = DateFormat.reformatDate(it.enrollment.enrollment_date),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -387,8 +360,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 5.dp, end = 15.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -407,18 +379,16 @@ private fun InfoCard(
                     .padding(top = 15.dp)
             ) {
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 15.dp, end = 5.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 15.dp, end = 5.dp),
                         hint = stringResource(id = R.string.phone_number),
                         align = TextAlign.Center,
                         enabled = false,
                         text = it.phone_number,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -426,8 +396,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 15.dp, end = 5.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -440,18 +409,16 @@ private fun InfoCard(
                 }
 
                 if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(start = 5.dp, end = 15.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 15.dp),
                         hint = stringResource(id = R.string.education),
                         align = TextAlign.Center,
                         enabled = false,
                         text = it.qualification,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 } else {
                     Box(
                         modifier = Modifier
@@ -459,8 +426,7 @@ private fun InfoCard(
                             .wrapContentHeight()
                             .padding(start = 5.dp, end = 15.dp)
                             .weight(1f)
-                    )
-                    {
+                    ) {
                         Box(
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(10.dp))
@@ -479,17 +445,15 @@ private fun InfoCard(
                     if (!md.isNullOrEmpty()) {
                         medicalCondition = md
                     }
-                    OutlinedTextInputField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                    OutlinedTextInputField(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
                         hint = stringResource(id = R.string.medical_type),
                         align = TextAlign.Center,
                         enabled = false,
                         text = medicalCondition,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        onDoneClicked = {}
-                    )
+                        onDoneClicked = {})
                 }
             } else {
                 Box(
@@ -497,8 +461,7 @@ private fun InfoCard(
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -515,25 +478,22 @@ private fun InfoCard(
                 if (it.address.isNotEmpty()) {
                     governorate = it.address[0].governorate.name
                 }
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                OutlinedTextInputField(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
                     hint = stringResource(id = R.string.governorate),
                     align = TextAlign.Center,
                     enabled = false,
                     text = governorate,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+                    onDoneClicked = {})
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -546,25 +506,22 @@ private fun InfoCard(
             }
 
             if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, top = 15.dp),
+                OutlinedTextInputField(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp),
                     hint = stringResource(id = R.string.unit_job),
                     align = TextAlign.Center,
                     enabled = false,
                     text = it.enrollment.unit_job,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+                    onDoneClicked = {})
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(start = 15.dp, end = 15.dp, top = 15.dp)
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -577,37 +534,28 @@ private fun InfoCard(
             }
 
             if (!viewModel.isDataLoading && viewModel.isDataSuccessful) {
-                OutlinedTextInputField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(
-                            start = 15.dp,
-                            end = 15.dp,
-                            top = 15.dp,
-                            bottom = 15.dp
-                        ),
+                OutlinedTextInputField(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(
+                        start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp
+                    ),
                     hint = stringResource(id = R.string.notes),
                     align = TextAlign.Center,
                     singleLine = false,
                     enabled = false,
                     text = it.getNotesAsString(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onDoneClicked = {}
-                )
+                    onDoneClicked = {})
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .padding(
-                            start = 15.dp,
-                            end = 15.dp,
-                            top = 15.dp,
-                            bottom = 15.dp
+                            start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp
                         )
-                )
-                {
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(shape = RoundedCornerShape(10.dp))
@@ -632,21 +580,17 @@ private fun BottomBarContent() {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        RoundedButton(
-            modifier = Modifier
-                .padding(start = 20.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
-                .weight(1f),
-            text = "خروج",
-            onClick = {}
-        )
+        RoundedButton(modifier = Modifier
+            .padding(
+                start = 20.dp, end = 10.dp, top = 10.dp, bottom = 10.dp
+            )
+            .weight(1f), text = "خروج", onClick = {})
 
-        RoundedButton(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)
-                .weight(1f),
-            text = "دخول",
-            onClick = {}
-        )
+        RoundedButton(modifier = Modifier
+            .padding(
+                start = 10.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
+            )
+            .weight(1f), text = "دخول", onClick = {})
     }
 }
 
@@ -710,15 +654,15 @@ private fun StatusItemWithText(statusText: String, status: String) {
         Text(
             modifier = Modifier
                 .padding(end = 10.dp)
-                .align(Alignment.CenterEnd), text = statusText,
+                .align(Alignment.CenterEnd),
+            text = statusText,
             textAlign = TextAlign.Center
         )
 
         Text(
             modifier = Modifier
                 .padding(start = 20.dp)
-                .align(Alignment.CenterStart),
-            text = status
+                .align(Alignment.CenterStart), text = status
         )
     }
 }
@@ -733,7 +677,8 @@ private fun StatusItemWithIcon(text: String, ic: Int, tint: Color) {
         Text(
             modifier = Modifier
                 .padding(end = 10.dp)
-                .align(Alignment.CenterEnd), text = text,
+                .align(Alignment.CenterEnd),
+            text = text,
             textAlign = TextAlign.Center
         )
 

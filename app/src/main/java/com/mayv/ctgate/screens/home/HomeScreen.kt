@@ -45,7 +45,9 @@ fun HomeScreen(navigationController: NavController) {
 @Composable
 fun MainSurface(navigationController: NavController) {
     Surface(
-        modifier = Modifier.fillMaxSize().padding(top = 60.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 60.dp)
     ) {
         Box(
             modifier = Modifier
@@ -84,7 +86,9 @@ fun MainSurface(navigationController: NavController) {
                     hint = stringResource(id = R.string.national_id),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 ) { text ->
-                    navigationController.navigate(AppScreens.SoldierScreen.name + "/$text")
+                    if (isNumeric(toCheck = text)) {
+                        navigationController.navigate(AppScreens.SoldierScreen.name.plus("/$text"))
+                    }
                 }
 
                 Box(
@@ -132,7 +136,9 @@ fun MainSurface(navigationController: NavController) {
                     hint = stringResource(id = R.string.name),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 ) { text ->
-                    navigationController.navigate(AppScreens.SoldierScreen.name + "/30003280201298")
+                    if (text.isNotEmpty()) {
+                        navigationController.navigate(AppScreens.SearchScreen.name.plus("/$text"))
+                    }
                 }
 
                 BannerText(
@@ -147,4 +153,8 @@ fun MainSurface(navigationController: NavController) {
             }
         }
     }
+}
+
+private fun isNumeric(toCheck: String): Boolean {
+    return toCheck.toDoubleOrNull() != null
 }

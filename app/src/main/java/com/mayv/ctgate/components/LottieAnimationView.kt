@@ -21,9 +21,13 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mayv.ctgate.R
 
 @Composable
-fun ServerError(modifier: Modifier, message: String = stringResource(id = R.string.no_conncetion)) {
+fun LottieAnimationView(
+    modifier: Modifier,
+    message: String = stringResource(id = R.string.no_conncetion),
+    resource: Int
+) {
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error_animation))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resource))
 
     Column(
         modifier = modifier,

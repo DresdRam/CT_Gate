@@ -42,9 +42,9 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
             if(statusCode == 200 || statusCode == 201){
                 token = _data.value.data!!.access_token
                 isSuccessful = true
-            } else {
-                isLoading = false
             }
+
+            isLoading = false
         }
     }
 

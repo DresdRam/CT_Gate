@@ -36,8 +36,8 @@ import com.mayv.ctgate.R
 import com.mayv.ctgate.components.BackButton
 import com.mayv.ctgate.components.LogItem
 import com.mayv.ctgate.components.LogItemShimmer
+import com.mayv.ctgate.components.LottieAnimationView
 import com.mayv.ctgate.components.OutlinedTextInputField
-import com.mayv.ctgate.components.ServerError
 import com.mayv.ctgate.navigation.AppScreens
 import com.mayv.ctgate.utils.DateFormat
 import com.mayv.ctgate.utils.PreferenceHelper
@@ -125,7 +125,7 @@ fun MainSurface(
                                     cursorColor = Color.White
                                 ),
                             onDoneClicked = {
-                                if (it.isNotEmpty() && it.isBlank()){
+                                if (it.isNotEmpty() && it.isBlank()) {
                                     //viewModel.soldierLogs(it, preferences.token!!)
                                 }
                             }
@@ -185,7 +185,11 @@ private fun LogsList(
         lostConnection(true)
 
         Box(modifier = Modifier.fillMaxSize()) {
-            ServerError(modifier = Modifier.align(Alignment.Center), "! انت غير مصرح لك")
+            LottieAnimationView(
+                modifier = Modifier.align(Alignment.Center),
+                "! انت غير مصرح لك",
+                R.raw.server_error_animation
+            )
         }
 
     } else if (viewModel.isLoading) {

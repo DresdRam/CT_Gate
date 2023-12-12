@@ -10,12 +10,13 @@ enum class AppScreens {
     HomeScreen,
     LoginScreen,
     SearchScreen,
+    SettingsScreen,
     SoldierScreen,
     SplashScreen;
 
     companion object {
         fun fromRoute(route: String): AppScreens
-        = when(route?.substringBefore('/')){
+        = when(route.substringBefore('/')){
             AttendanceScreen.name -> AttendanceScreen
             CountScreen.name -> CountScreen
             EntersScreen.name -> EntersScreen
@@ -23,9 +24,9 @@ enum class AppScreens {
             HomeScreen.name -> HomeScreen
             LoginScreen.name -> LoginScreen
             SearchScreen.name -> SearchScreen
+            SettingsScreen.name -> SettingsScreen
             SoldierScreen.name -> SoldierScreen
             SplashScreen.name -> SplashScreen
-            null -> LoginScreen
             else -> throw IllegalArgumentException("Route $route is not Recognised.")
         }
     }

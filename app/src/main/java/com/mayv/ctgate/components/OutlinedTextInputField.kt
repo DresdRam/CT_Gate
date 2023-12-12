@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -60,13 +62,16 @@ fun OutlinedTextInputField(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = hintColor
+                color = hintColor,
+                fontFamily = FontFamily(Font(R.font.arabic))
             )
         },
         modifier = modifier,
         singleLine = singleLine,
-        textStyle = TextStyle(
+        textStyle = TextStyle.Default.copy(
             textDirection = TextDirection.Content,
+            fontSize = 12.sp,
+            fontFamily = FontFamily(Font(R.font.arabic)),
             textAlign = align
         ),
         keyboardOptions = keyboardOptions,

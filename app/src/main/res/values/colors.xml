@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="green">#5aa65c</color>
-    <color name="red">#f44236</color>
-    <color name="primary_color">#32317f</color>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="green">#5AA65C</color>
+    <color name="red">#F44236</color>
+    <color name="primary_color">#32317F</color>
     <color name="secondary_color">#737373</color>
-    <color name="main_color">#FF9B9B9B</color>
+    <color name="main_color">#9B9B9B</color>
     <color name="gradient_color">#616161</color>
-    <color name="drawer_item_color">#7c7b7b</color>
+    <color name="drawer_item_color">#7C7B7B</color>
     <color name="hint_color">#737373</color>
     <color name="background_grey">#C5C5C5</color>
+    <color name="soldiers_list_item_background">#e1e1ff</color>
+    <color name="soldiers_list_item_border">#bfc8e5</color>
+    <color name="gray">#737373</color>
+    <color name="dark_disabled">#494458</color>
+    <color name="semi_primary">#4F378B</color>
 </resources>

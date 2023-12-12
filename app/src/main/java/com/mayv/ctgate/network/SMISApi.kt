@@ -41,6 +41,15 @@ interface SMISApi {
         @Header("Authorization") authToken: String
     ): Response<ResponseBody>
 
+    @GET("soldier/search")
+    suspend fun searchForSoldiers(
+        @Query("name") name: String,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20,
+        @Query("excludeRemoved") excludeRemoved: Int,
+        @Header("Authorization") authToken: String
+    ): Response<List<Soldier>>
+
     @POST("user/login")
     suspend fun login(@Body login: Login): Response<Authorization>
 

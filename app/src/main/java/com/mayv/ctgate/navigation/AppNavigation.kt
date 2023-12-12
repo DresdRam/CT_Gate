@@ -15,6 +15,7 @@ import com.mayv.ctgate.screens.exits.ExitsScreen
 import com.mayv.ctgate.screens.home.HomeScreen
 import com.mayv.ctgate.screens.login.LoginScreen
 import com.mayv.ctgate.screens.search.SearchScreen
+import com.mayv.ctgate.screens.settings.SettingsScreen
 import com.mayv.ctgate.screens.soldier.SoldierScreen
 import com.mayv.ctgate.screens.splash.SplashScreen
 
@@ -25,7 +26,10 @@ fun AppNavigation() {
 
     NavHost(navController = navigationController, startDestination = AppScreens.SplashScreen.name) {
 
-        composable(route = AppScreens.SearchScreen.name,
+        composable(route = AppScreens.SearchScreen.name.plus("/{search_name}"),
+            arguments = listOf(
+                navArgument("search_name"){ type = NavType.StringType }
+            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -47,10 +51,11 @@ fun AppNavigation() {
                     animationSpec = tween(transitionSpeed)
                 )
             }) {
-            SearchScreen(navigationController)
+            val searchName = it.arguments?.getString("search_name") ?: ""
+            SearchScreen(navigationController, searchQuery = searchName)
         }
 
-        composable(route = AppScreens.SoldierScreen.name + "/{national_id}",
+        composable(route = AppScreens.SoldierScreen.name.plus("/{national_id}"),
             arguments = listOf(
                 navArgument("national_id"){ type = NavType.LongType }
             ),
@@ -252,6 +257,31 @@ fun AppNavigation() {
                 )
             }) {
             LoginScreen(navigationController = navigationController)
+        }
+
+        composable(AppScreens.SettingsScreen.name,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            SettingsScreen(navigationController = navigationController)
         }
     }
 }
