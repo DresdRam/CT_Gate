@@ -56,12 +56,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DrawerScreen(navController: NavController, drawerMainContent: @Composable () -> Unit) {
-    MainScaffold(navController = navController, drawerMainContent= drawerMainContent)
+    MainScaffold(navController = navController, drawerMainContent = drawerMainContent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScaffold(navController: NavController, drawerMainContent: @Composable () ->Unit) {
+private fun MainScaffold(navController: NavController, drawerMainContent: @Composable () -> Unit) {
 
     val drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -179,7 +179,7 @@ fun MainDrawerScreen(
                             }
                         }
 
-                            LazyColumn(
+                        LazyColumn(
                             modifier = Modifier
                                 .padding(top = 45.dp, bottom = 10.dp)
                                 .align(Alignment.Center),

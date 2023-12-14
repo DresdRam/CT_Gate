@@ -24,7 +24,7 @@ fun AppNavigation() {
     val navigationController = rememberNavController()
     val transitionSpeed = 300
 
-    NavHost(navController = navigationController, startDestination = AppScreens.SplashScreen.name) {
+    NavHost(navController = navigationController, startDestination = AppScreens.AttendanceScreen.name) {
 
         composable(route = AppScreens.SearchScreen.name.plus("/{search_name}"),
             arguments = listOf(
