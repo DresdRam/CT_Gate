@@ -4,7 +4,7 @@
 
 An application for the main gate of Cairo Traffic Camp to track soldiers activities.
 
-The application deals with SMIS Api, it is an api built by me using Nest.js.
+The application deals with SMIS Api, it is an api implemented by me using Nest.js.
 
 # SMIS Api Github Link
 https://github.com/DresdRam/SMIS-Nest
